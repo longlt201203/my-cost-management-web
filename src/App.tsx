@@ -1,5 +1,7 @@
 import { ConfigProvider } from "antd";
+import { ErrorBoundary } from "react-error-boundary";
 import { Outlet } from "react-router-dom";
+import ErrorPage from "./pages/ErrorPage";
 
 function MyApp() {
   return (
@@ -10,7 +12,9 @@ function MyApp() {
         },
       }}
     >
-      <Outlet />
+      <ErrorBoundary FallbackComponent={ErrorPage}>
+        <Outlet />
+      </ErrorBoundary>
     </ConfigProvider>
   );
 }

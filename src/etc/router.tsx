@@ -4,6 +4,9 @@ import LoginPage from "../pages/LoginPage";
 import DashboardLayout from "../pages/Dashboard";
 import DashboardHomePage from "../pages/Dashboard/Home";
 import DashboardBoardsPage from "../pages/Dashboard/Boards";
+import NotFoundPage from "../pages/ErrorPage/NotFoundPage";
+import AuthProvider from "../providers/AuthProvider";
+import BoardDetailPage from "../pages/Dashboard/Boards/BoardDetailPage";
 
 const router = createBrowserRouter([
   {
@@ -16,19 +19,33 @@ const router = createBrowserRouter([
       },
       {
         path: "",
-        element: <DashboardLayout />,
+        element: <AuthProvider />,
         children: [
           {
             path: "",
-            element: <DashboardHomePage />,
-          },
-          {
-            path: "boards",
-            element: <DashboardBoardsPage />,
+            element: <DashboardLayout />,
+            children: [
+              {
+                path: "",
+                element: <DashboardHomePage />,
+              },
+              {
+                path: "boards",
+                element: <DashboardBoardsPage />,
+              },
+              {
+                path: "boards/:boardId",
+                element: <BoardDetailPage />,
+              },
+            ],
           },
         ],
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ]);
 

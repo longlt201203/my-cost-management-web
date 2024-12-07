@@ -4,8 +4,11 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import CategoryIcon from "@mui/icons-material/Category";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+// import { MenuItemType } from "antd/es/menu/interface";
 
 const { Text } = Typography;
+
+// const menuItems: MenuItemType[] = [];
 
 export default function DashboardLayout() {
   const {

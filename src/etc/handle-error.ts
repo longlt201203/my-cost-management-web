@@ -2,8 +2,8 @@ import { MessageInstance } from "antd/es/message/interface";
 import { AxiosError, HttpStatusCode } from "axios";
 
 export default function handleError(
-  err: any,
-  showBoundary: (err: any) => void,
+  err: unknown,
+  showBoundary: (err: unknown) => void,
   messageApi: MessageInstance
 ) {
   if (err instanceof AxiosError && err.response) {

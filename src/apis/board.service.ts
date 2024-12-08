@@ -30,6 +30,12 @@ export default class BoardService {
     const response = await AxiosService.delete(url);
     return response.data;
   }
+
+  static async getDailyAnalysis(boardId: number) {
+    const url = `/api/board/${boardId}/analysis/daily`;
+    const response = await AxiosService.get<DailyAnalysisResponse>(url);
+    return response.data;
+  }
 }
 
 export interface BoardResponse {
@@ -46,3 +52,23 @@ export interface CreateBoardRequest {
 }
 
 export interface UpdateBoardRequest extends CreateBoardRequest {}
+
+export interface ExtractedRecordResponse {
+  id: number;
+  time: string;
+  description: string;
+  amount: number;
+  paymentMethod: string;
+  location: string;
+  notes: string;
+}
+
+export interface DailyAnalysisResponse {
+  id: number;
+  date: number;
+  month: number;
+  year: number;
+  total: number;
+  createdAt: string;
+  extractedRecords: ExtractedRecordResponse[];
+}

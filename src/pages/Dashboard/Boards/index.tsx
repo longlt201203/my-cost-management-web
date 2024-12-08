@@ -11,20 +11,21 @@ import {
 import handleError from "../../../etc/handle-error";
 import { useErrorBoundary } from "react-error-boundary";
 import DeleteBoardModal from "./DeleteBoardModal";
+import CurrencyUnit, { getCurrencyUnit } from "../../../etc/currency-unit";
 
 const { Title, Text } = Typography;
 
 export default function DashboardBoardsPage() {
-  const [messageApi, contextHolder] = message.useMessage();
-  const { showBoundary } = useErrorBoundary();
-
   const emptyBoard: BoardResponse = {
     id: 0,
     title: "",
-    currencyUnit: "",
+    currencyUnit: CurrencyUnit.kVND.code,
     createdAt: "",
     updatedAt: "",
   };
+
+  const [messageApi, contextHolder] = message.useMessage();
+  const { showBoundary } = useErrorBoundary();
 
   const [boards, setBoards] = useState<BoardResponse[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,7 +39,9 @@ export default function DashboardBoardsPage() {
     try {
       const boards = await BoardService.listBoards();
       setBoards(boards);
-    } catch (err) {}
+    } catch (err) {
+      handleError(err, showBoundary, messageApi);
+    }
   };
 
   useEffect(() => {
@@ -124,9 +127,8 @@ export default function DashboardBoardsPage() {
                     onClick={() => {
                       navigate(`/boards/${item.id}`);
                     }}
-                  >
-                    <LaunchOutlined fontSize="small" />
-                  </Button>,
+                    icon={<LaunchOutlined fontSize="small" />}
+                  ></Button>,
                   <Button
                     key="edit"
                     size="small"
@@ -136,9 +138,8 @@ export default function DashboardBoardsPage() {
                       setModalBoard(board || emptyBoard);
                       setIsModalOpen(true);
                     }}
-                  >
-                    <EditOutlined fontSize="small" />
-                  </Button>,
+                    icon={<EditOutlined fontSize="small" />}
+                  ></Button>,
                   <Button
                     key="delete"
                     size="small"
@@ -149,9 +150,8 @@ export default function DashboardBoardsPage() {
                       setModalBoard(board || emptyBoard);
                       setIsDeleteModalOpen(true);
                     }}
-                  >
-                    <DeleteOutline fontSize="small" />
-                  </Button>,
+                    icon={<DeleteOutline fontSize="small" />}
+                  ></Button>,
                 ]}
               >
                 <Card.Meta
@@ -159,7 +159,8 @@ export default function DashboardBoardsPage() {
                   description={
                     <>
                       <Text type="secondary">
-                        Currency Unit: {item.currencyUnit}
+                        Currency Unit:{" "}
+                        {getCurrencyUnit(item.currencyUnit)?.label}
                       </Text>
                     </>
                   }

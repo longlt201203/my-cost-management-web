@@ -1,6 +1,7 @@
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, Select } from "antd";
 import { BoardResponse } from "../../../apis/board.service";
 import { useEffect } from "react";
+import CurrencyUnit from "../../../etc/currency-unit";
 
 export interface BoardModalProps {
   board: BoardResponse;
@@ -58,9 +59,18 @@ export default function BoardModal({
         <Form.Item<BoardResponse> label="Title" name="title">
           <Input placeholder="Enter Title" />
         </Form.Item>
-        <Form.Item<BoardResponse> label="Currency Unit" name="currencyUnit">
-          <Input placeholder="Enter Currency Unit" />
-        </Form.Item>
+        {!board.id && (
+          <Form.Item<BoardResponse> label="Currency Unit" name="currencyUnit">
+            <Select
+              placeholder="Select Currency Unit"
+              showSearch
+              options={Object.values(CurrencyUnit).map((item) => ({
+                value: item.code,
+                label: item.label,
+              }))}
+            />
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );

@@ -1,5 +1,5 @@
-import { Flex, message, Typography } from "antd";
-import { AxiosError, HttpStatusCode } from "axios";
+import { Flex, Typography } from "antd";
+import { AxiosError } from "axios";
 import errorPlaceholder from "../../assets/error-placeholder.svg";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../apis/axios.service";
@@ -7,11 +7,7 @@ import { FallbackProps } from "react-error-boundary";
 
 const { Text, Title } = Typography;
 
-export default function ErrorPage({
-  error,
-  resetErrorBoundary,
-}: FallbackProps) {
-  const [messageApi] = message.useMessage();
+export default function ErrorPage({ error }: FallbackProps) {
   const [statusCode, setStatusCode] = useState<number>(500);
   const [statusText, setStatusText] = useState<string>("Unknown Error");
   const [description, setDescription] = useState<string>();

@@ -1,0 +1,36 @@
+name: Workflow Name
+on:
+  push:
+    branches:
+      - deploy/dev
+
+  workflow_dispatch:
+
+jobs:
+  build-and-export:
+    runs-on: ubuntu-latest
+    container: node:20
+    steps:
+      - name: Checkout to repo
+        uses: actions/checkout@v4
+      - name: Install dependency
+        run: yarn
+      - name: Build project
+        run: yarn build
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: |
+            dist
+
+  import-to-app:
+    runs-on: self-hosted
+    steps:
+      - name: Download a single artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+      - name: Move dist to application folder
+        run: |
+          mv -i dist /mcm_app

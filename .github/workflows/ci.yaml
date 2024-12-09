@@ -32,6 +32,6 @@ jobs:
           curl -L \
           -X POST \
           -H "x-deploy-key: ${{ secrets.DEPLOY_KEY }}" \
-          -H "Content-Type: application/x-zip-compressed" \
+          -H "Content-Type: multipart/form-data" \
           -F "file=@dist.zip" \
           ${{ env.DEPLOY_URI }}

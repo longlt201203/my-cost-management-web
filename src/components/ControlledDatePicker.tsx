@@ -1,15 +1,17 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@mui/icons-material";
-import { Button, DatePicker, Flex } from "antd";
+import { Button, DatePicker, DatePickerProps, Flex } from "antd";
 import dayjs from "dayjs";
 
 export interface ControlledDatePickerProps {
   value?: dayjs.Dayjs;
   onChange?: (value: dayjs.Dayjs) => void;
+  picker?: DatePickerProps["picker"];
 }
 
 export default function ControlledDatePicker({
   value,
   onChange,
+  picker,
 }: ControlledDatePickerProps) {
   return (
     <Flex justify="center" align="center" gap="small">
@@ -24,7 +26,7 @@ export default function ControlledDatePicker({
           }
         }}
       ></Button>
-      <DatePicker onChange={onChange} value={value} />
+      <DatePicker onChange={onChange} value={value} picker={picker} />
       <Button
         size="small"
         icon={<ArrowRightOutlined fontSize="small" />}

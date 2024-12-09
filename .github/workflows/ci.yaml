@@ -1,0 +1,37 @@
+name: MCM FRONT CI
+on:
+  push:
+    branches:
+      - deploy/dev
+
+  workflow_dispatch:
+
+env:
+  REPO_ID: my-cost-management-web
+  DEPLOY_URI: https://mcmapp.online/api/front
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    container: node:20
+    steps:
+      - name: Prepare environment
+        run: |
+          apt-get update
+          apt-get install -y zip
+      - name: Checkout to repo
+        uses: actions/checkout@v4
+      - name: Install dependency
+        run: yarn
+      - name: Build project
+        run: yarn build
+      - name: Zip project
+        run: zip -r dist.zip dist/*
+      - name: Deploy to dev server
+        run: |
+          curl -L \
+          -X POST \
+          -H "x-deploy-key: ${{ secrets.DEPLOY_KEY }}" \
+          -H "Content-Type: multipart/form-data" \
+          -F "file=@dist.zip" \
+          ${{ env.DEPLOY_URI }}

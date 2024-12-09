@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     container: node:20
     steps:
+      - name: Prepare environment
+        run: |
+          apt-get update
+          apt-get install -y zip
       - name: Checkout to repo
         uses: actions/checkout@v4
       - name: Install dependency

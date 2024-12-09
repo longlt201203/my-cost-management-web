@@ -1,4 +1,4 @@
-name: Workflow Name
+name: MCM FRONT CI
 on:
   push:
     branches:
@@ -6,8 +6,12 @@ on:
 
   workflow_dispatch:
 
+env:
+  REPO_ID: my-cost-management-web
+  DEPLOY_URI: https://mcmapp.online/api/front
+
 jobs:
-  build-and-export:
+  build-and-deploy:
     runs-on: ubuntu-latest
     container: node:20
     steps:
@@ -17,21 +21,13 @@ jobs:
         run: yarn
       - name: Build project
         run: yarn build
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: |
-            dist
-
-  import-to-app:
-    runs-on: self-hosted
-    needs: build-and-export
-    steps:
-      - name: Download a single artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-      - name: Move dist to application folder
+      - name: Zip project
+        run: zip -r dist.zip dist
+      - name: Deploy to dev server
         run: |
-          mv -i dist /mcm_app
+          curl -L \
+          -X POST \
+          -H "x-deploy-key: ${{ secrets.DEPLOY_KEY }}" \
+          -H "Content-Type: application/x-zip-compressed" \
+          -F "file=@dist.zip" \
+          ${{ env.DEPLOY_URI }}

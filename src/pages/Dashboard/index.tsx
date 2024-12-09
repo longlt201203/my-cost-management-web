@@ -60,7 +60,9 @@ export default function DashboardLayout() {
         </Layout.Content>
         <Layout.Footer>
           <Flex justify="center">
-            <Text>&copy; 2024 - Le Thanh Long</Text>
+            <Text>
+              &copy; 2024 Le Thanh Long, Bui Phan Long. All rights reserved.
+            </Text>
           </Flex>
         </Layout.Footer>
       </Layout>

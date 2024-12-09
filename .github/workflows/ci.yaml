@@ -26,7 +26,7 @@ jobs:
       - name: Build project
         run: yarn build
       - name: Zip project
-        run: zip -r dist.zip dist/*
+        run: cd dist && zip -r ../dist.zip ./*
       - name: Deploy to dev server
         run: |
           curl -L \

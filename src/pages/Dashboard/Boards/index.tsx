@@ -12,6 +12,7 @@ import handleError from "../../../etc/handle-error";
 import { useErrorBoundary } from "react-error-boundary";
 import DeleteBoardModal from "./DeleteBoardModal";
 import CurrencyUnit, { getCurrencyUnit } from "../../../etc/currency-unit";
+import placeholder_600x400 from "../../../assets/placeholder_600x400.svg";
 
 const { Title, Text } = Typography;
 
@@ -116,7 +117,7 @@ export default function DashboardBoardsPage() {
               key={index}
             >
               <Card
-                cover={<img src="https://placehold.co/600x400" />}
+                cover={<img src={placeholder_600x400} />}
                 bordered={false}
                 actions={[
                   <Button

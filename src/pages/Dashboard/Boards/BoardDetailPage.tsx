@@ -43,7 +43,7 @@ export default function BoardDetailPage() {
   const [isDeleteRecordModalLoading, setIsDeleteRecordModalLoading] =
     useState(false);
   const [listRecordsQuery, setListRecordsQuery] = useState<ListRecordsQuery>({
-    date: dayjs(searchParams.get("date")).toDate(),
+    date: dayjs(searchParams.get("date") || undefined).toDate(),
   });
   const [isRecordTableLoading, setIsRecordTableLoading] = useState(false);
 

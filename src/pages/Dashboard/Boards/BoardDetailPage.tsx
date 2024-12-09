@@ -1,14 +1,18 @@
 import { Button, Flex, message, Skeleton, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import BoardService, { BoardResponse } from "../../../apis/board.service";
 import { useErrorBoundary } from "react-error-boundary";
 import handleError from "../../../etc/handle-error";
-import RecordService, { RecordResponse } from "../../../apis/record.service";
+import RecordService, {
+  ListRecordsQuery,
+  RecordResponse,
+} from "../../../apis/record.service";
 import dayjs from "dayjs";
 import RecordModal from "./RecordModal";
 import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import DeleteRecordModal from "./DeleteRecordModal";
+import ControlledDatePicker from "../../../components/ControlledDatePicker";
 
 const { Title } = Typography;
 
@@ -26,6 +30,8 @@ export default function BoardDetailPage() {
 
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [currentTimeout, setCurrentTimeout] = useState<number>();
   const { boardId } = useParams();
   const [board, setBoard] = useState<BoardResponse>();
   const [boardRecords, setBoardRecords] = useState<RecordResponse[]>([]);
@@ -36,6 +42,10 @@ export default function BoardDetailPage() {
   const [isDeleteRecordModalOpen, setIsDeleteRecordModalOpen] = useState(false);
   const [isDeleteRecordModalLoading, setIsDeleteRecordModalLoading] =
     useState(false);
+  const [listRecordsQuery, setListRecordsQuery] = useState<ListRecordsQuery>({
+    date: dayjs(searchParams.get("date")).toDate(),
+  });
+  const [isRecordTableLoading, setIsRecordTableLoading] = useState(false);
 
   const fetchBoard = async () => {
     try {
@@ -47,18 +57,43 @@ export default function BoardDetailPage() {
   };
 
   const fetchRecords = async () => {
+    setIsRecordTableLoading(true);
     try {
-      const records = await RecordService.listRecords(Number(boardId));
+      const records = await RecordService.listRecords(
+        Number(boardId),
+        listRecordsQuery
+      );
       setBoardRecords(records);
     } catch (err) {
       handleError(err, showBoundary, messageApi);
     }
+    setIsRecordTableLoading(false);
+  };
+
+  const updateListRecordsQuery = (data: ListRecordsQuery) => {
+    const newQuery = {
+      ...listRecordsQuery,
+      ...data,
+    };
+    setListRecordsQuery(newQuery);
   };
 
   useEffect(() => {
     fetchBoard();
-    fetchRecords();
   }, []);
+
+  useEffect(() => {
+    if (currentTimeout) clearTimeout(currentTimeout);
+    setCurrentTimeout(
+      setTimeout(() => {
+        const searchParams = new URLSearchParams();
+        if (listRecordsQuery.date)
+          searchParams.set("date", listRecordsQuery.date.toISOString());
+        setSearchParams(searchParams);
+        fetchRecords();
+      }, 500)
+    );
+  }, [listRecordsQuery]);
 
   const handleModalFormSubmit = async (record: RecordResponse) => {
     setIsRecordModalLoading(true);
@@ -118,7 +153,18 @@ export default function BoardDetailPage() {
                 </Button>
                 <Button onClick={() => {}}>View Analysis</Button>
               </Flex>
+              <Flex>
+                <ControlledDatePicker
+                  value={dayjs(listRecordsQuery.date)}
+                  onChange={(v) =>
+                    updateListRecordsQuery({
+                      date: v.toDate(),
+                    })
+                  }
+                />
+              </Flex>
               <Table<RecordTableItemType>
+                loading={isRecordTableLoading}
                 dataSource={boardRecords.map((item, index) => ({
                   ...item,
                   index: index + 1,
@@ -145,29 +191,30 @@ export default function BoardDetailPage() {
                   },
                   {
                     key: "actions",
-                    render: (_, record) => (
-                      <Flex gap="small" justify="center" align="center">
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          icon={<EditOutlined fontSize="small" />}
-                          onClick={() => {
-                            setCurrentRecord(record);
-                            setIsRecordModalOpen(true);
-                          }}
-                        ></Button>
-                        <Button
-                          size="small"
-                          color="danger"
-                          variant="outlined"
-                          icon={<DeleteOutlined fontSize="small" />}
-                          onClick={() => {
-                            setCurrentRecord(record);
-                            setIsDeleteRecordModalOpen(true);
-                          }}
-                        ></Button>
-                      </Flex>
-                    ),
+                    render: (_, record) =>
+                      dayjs().isSame(dayjs(listRecordsQuery.date), "date") && (
+                        <Flex gap="small" justify="center" align="center">
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            icon={<EditOutlined fontSize="small" />}
+                            onClick={() => {
+                              setCurrentRecord(record);
+                              setIsRecordModalOpen(true);
+                            }}
+                          ></Button>
+                          <Button
+                            size="small"
+                            color="danger"
+                            variant="outlined"
+                            icon={<DeleteOutlined fontSize="small" />}
+                            onClick={() => {
+                              setCurrentRecord(record);
+                              setIsDeleteRecordModalOpen(true);
+                            }}
+                          ></Button>
+                        </Flex>
+                      ),
                   },
                 ]}
               />

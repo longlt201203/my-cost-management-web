@@ -37,6 +37,12 @@ export default function DashboardLayout() {
       onClick: () => navigate("/boards"),
     },
     {
+      key: "analytics",
+      label: "Analytics",
+      icon: <AnalyticsIcon />,
+      onClick: () => navigate("/analytics"),
+    },
+    {
       key: "categories",
       label: "Categories",
       icon: <CategoryIcon />,

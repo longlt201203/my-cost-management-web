@@ -5,10 +5,11 @@ import BoardService, {
   BoardResponse,
   DailyAnalysisResponse,
   ExtractedRecordResponse,
+  GetDailyAnalysisQuery,
 } from "../../../apis/board.service";
 import { useErrorBoundary } from "react-error-boundary";
 import handleError from "../../../etc/handle-error";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 
 const { Title, Text } = Typography;
@@ -21,11 +22,20 @@ export interface DailyAnalysisTableItemType extends ExtractedRecordResponse {
 export default function DashboardAnalyticsPage() {
   const { boardId } = useParams();
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
   const [dailyAnalytics, setDailyAnalytics] = useState<DailyAnalysisResponse>();
   const [boards, setBoards] = useState<BoardResponse[]>([]);
+  const [board, setBoard] = useState<BoardResponse>();
+  const [getDailyAnalysisQuery, setGetDailyAnalysisQuery] =
+    useState<GetDailyAnalysisQuery>({
+      date: dayjs(searchParams.get("date") || undefined).toDate(),
+    });
+  const [getDailyAnalysisTimeout, setGetDailyAnalysisTimeout] =
+    useState<number>();
+  const [isDailyAnalysisLoading, setIsDailyAnalysisLoading] = useState(false);
 
   const fetchBoards = async () => {
     try {
@@ -36,15 +46,27 @@ export default function DashboardAnalyticsPage() {
     }
   };
 
+  const fetchBoard = async () => {
+    try {
+      const board = await BoardService.getBoard(Number(boardId));
+      setBoard(board);
+    } catch (err) {
+      handleError(err, showBoundary, messageApi);
+    }
+  };
+
   const fetchDailyAnalytics = async () => {
+    setIsDailyAnalysisLoading(true);
     try {
       const dailyAnalytics = await BoardService.getDailyAnalysis(
-        Number(boardId)
+        Number(boardId),
+        getDailyAnalysisQuery
       );
       setDailyAnalytics(dailyAnalytics);
     } catch (err) {
       handleError(err, showBoundary, messageApi);
     }
+    setIsDailyAnalysisLoading(false);
   };
 
   useEffect(() => {
@@ -53,9 +75,34 @@ export default function DashboardAnalyticsPage() {
 
   useEffect(() => {
     if (boardId) {
-      fetchDailyAnalytics();
+      fetchBoard();
     }
   }, [boardId]);
+
+  useEffect(() => {
+    if (boardId) {
+      setIsDailyAnalysisLoading(true);
+      setDailyAnalytics(undefined);
+      if (getDailyAnalysisTimeout) clearTimeout(getDailyAnalysisTimeout);
+      setGetDailyAnalysisTimeout(
+        setTimeout(() => {
+          const searchParams = new URLSearchParams();
+          if (getDailyAnalysisQuery.date)
+            searchParams.set("date", getDailyAnalysisQuery.date.toISOString());
+          setSearchParams(searchParams);
+          fetchDailyAnalytics();
+        }, 500)
+      );
+    }
+  }, [boardId, getDailyAnalysisQuery]);
+
+  const updateGetDailyAnalysisQuery = (data: GetDailyAnalysisQuery) => {
+    const newQuery = {
+      ...getDailyAnalysisQuery,
+      ...data,
+    };
+    setGetDailyAnalysisQuery(newQuery);
+  };
 
   return (
     <>
@@ -72,14 +119,23 @@ export default function DashboardAnalyticsPage() {
             onChange={(v) => {
               navigate(`/analytics/${v}`);
             }}
+            value={board?.id}
           />
         </Flex>
         <Flex vertical gap="small">
           <Title level={4}>Daily</Title>
           <Flex>
-            <ControlledDatePicker />
+            <ControlledDatePicker
+              value={dayjs(getDailyAnalysisQuery.date)}
+              onChange={(v) =>
+                updateGetDailyAnalysisQuery({ date: v?.toDate() })
+              }
+              format="DD/MM/YYYY"
+              maxDate={dayjs()}
+            />
           </Flex>
           <Table<DailyAnalysisTableItemType>
+            pagination={false}
             columns={[
               {
                 key: "index",
@@ -100,6 +156,7 @@ export default function DashboardAnalyticsPage() {
                 dataIndex: "amount",
                 key: "amount",
                 title: "Amount",
+                render: (value) => `${value} ${board?.currencyUnit}`,
               },
               {
                 dataIndex: "paymentMethod",
@@ -124,10 +181,12 @@ export default function DashboardAnalyticsPage() {
               time: dayjs(item.time).format("HH:mm:ss"),
             }))}
             scroll={{ x: 768 }}
+            loading={isDailyAnalysisLoading}
             footer={() => (
               <Flex vertical>
                 <Text>
-                  <Text strong>Tổng chi tiêu:</Text> {dailyAnalytics?.total}
+                  <Text strong>Total Spent:</Text> {dailyAnalytics?.total}{" "}
+                  {board?.currencyUnit}
                 </Text>
               </Flex>
             )}

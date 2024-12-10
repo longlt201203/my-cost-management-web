@@ -6,12 +6,16 @@ export interface ControlledDatePickerProps {
   value?: dayjs.Dayjs;
   onChange?: (value: dayjs.Dayjs) => void;
   picker?: DatePickerProps["picker"];
+  format?: string;
+  maxDate?: dayjs.Dayjs;
 }
 
 export default function ControlledDatePicker({
   value,
   onChange,
   picker,
+  format,
+  maxDate,
 }: ControlledDatePickerProps) {
   return (
     <Flex justify="center" align="center" gap="small">
@@ -26,17 +30,24 @@ export default function ControlledDatePicker({
           }
         }}
       ></Button>
-      <DatePicker onChange={onChange} value={value} picker={picker} />
+      <DatePicker
+        onChange={onChange}
+        value={value}
+        picker={picker}
+        format={format}
+        maxDate={maxDate}
+      />
       <Button
         size="small"
         icon={<ArrowRightOutlined fontSize="small" />}
         type="text"
         onClick={() => {
           if (onChange) {
-            const d = value || dayjs();
+            let d = value || dayjs();
             onChange(d.add(1, "day"));
           }
         }}
+        disabled={maxDate?.isSame(value, "date")}
       ></Button>
     </Flex>
   );

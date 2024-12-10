@@ -84,6 +84,8 @@ export default function BoardDetailPage() {
   }, []);
 
   useEffect(() => {
+    setBoardRecords([]);
+    setIsRecordTableLoading(true);
     if (currentTimeout) clearTimeout(currentTimeout);
     setCurrentTimeout(
       setTimeout(() => {
@@ -165,13 +167,16 @@ export default function BoardDetailPage() {
                   value={dayjs(listRecordsQuery.date)}
                   onChange={(v) =>
                     updateListRecordsQuery({
-                      date: v.toDate(),
+                      date: v?.toDate(),
                     })
                   }
+                  format="DD/MM/YYYY"
+                  maxDate={dayjs()}
                 />
               </Flex>
               <Table<RecordTableItemType>
                 loading={isRecordTableLoading}
+                pagination={false}
                 dataSource={boardRecords.map((item, index) => ({
                   ...item,
                   index: index + 1,

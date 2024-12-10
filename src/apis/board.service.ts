@@ -31,8 +31,10 @@ export default class BoardService {
     return response.data;
   }
 
-  static async getDailyAnalysis(boardId: number) {
-    const url = `/api/board/${boardId}/analysis/daily`;
+  static async getDailyAnalysis(boardId: number, query: GetDailyAnalysisQuery) {
+    const searchParams = new URLSearchParams();
+    if (query.date) searchParams.set("date", query.date.toISOString());
+    const url = `/api/board/${boardId}/analysis/daily?${searchParams.toString()}`;
     const response = await AxiosService.get<DailyAnalysisResponse>(url);
     return response.data;
   }
@@ -61,6 +63,10 @@ export interface ExtractedRecordResponse {
   paymentMethod: string;
   location: string;
   notes: string;
+}
+
+export interface GetDailyAnalysisQuery {
+  date?: Date;
 }
 
 export interface DailyAnalysisResponse {

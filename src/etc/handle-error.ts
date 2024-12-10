@@ -6,6 +6,7 @@ export default function handleError(
   showBoundary: (err: unknown) => void,
   messageApi: MessageInstance
 ) {
+  console.log(err);
   if (err instanceof AxiosError && err.response) {
     if (err.response.status == HttpStatusCode.BadRequest) {
       messageApi.error({

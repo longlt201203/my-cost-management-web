@@ -7,6 +7,7 @@ import DashboardBoardsPage from "../pages/Dashboard/Boards";
 import NotFoundPage from "../pages/ErrorPage/NotFoundPage";
 import AuthProvider from "../providers/AuthProvider";
 import BoardDetailPage from "../pages/Dashboard/Boards/BoardDetailPage";
+import DashboardAnalyticsPage from "../pages/Dashboard/Analytics";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
               {
                 path: "boards/:boardId",
                 element: <BoardDetailPage />,
+              },
+              {
+                path: "analytics/:boardId",
+                element: <DashboardAnalyticsPage />,
+              },
+              {
+                path: "analytics",
+                element: <DashboardAnalyticsPage />,
               },
             ],
           },

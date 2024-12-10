@@ -31,7 +31,9 @@ export default function ControlledDatePicker({
         }}
       ></Button>
       <DatePicker
-        onChange={onChange}
+        onChange={(v) => {
+          onChange && onChange(dayjs(v));
+        }}
         value={value}
         picker={picker}
         format={format}

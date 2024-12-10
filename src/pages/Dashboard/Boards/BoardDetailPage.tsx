@@ -10,7 +10,7 @@ import RecordService, {
 } from "../../../apis/record.service";
 import dayjs from "dayjs";
 import RecordModal from "./RecordModal";
-import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
+import { ArrowBack, DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import DeleteRecordModal from "./DeleteRecordModal";
 import ControlledDatePicker from "../../../components/ControlledDatePicker";
 
@@ -142,8 +142,18 @@ export default function BoardDetailPage() {
       <div className="p-4">
         {board ? (
           <>
-            <Flex vertical gap="middle">
-              <Title level={2}>{board?.title}</Title>
+            <Flex vertical gap="large">
+              <Flex align="center" gap="large">
+                <Button
+                  type="text"
+                  shape="circle"
+                  icon={<ArrowBack />}
+                  onClick={() => navigate('/boards')}
+                />
+                <Title level={2} style={{ marginBottom: 0 }}>
+                  {board?.title}
+                </Title>
+              </Flex>
               <Flex gap="small">
                 <Button
                   type="primary"

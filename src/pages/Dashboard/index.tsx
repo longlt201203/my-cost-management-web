@@ -1,13 +1,15 @@
-import { Flex, FloatButton, Layout, Menu, theme, Typography } from "antd";
+import { Button, Flex, FloatButton, Layout, Menu, theme, Typography } from "antd";
 import HomeIcon from "@mui/icons-material/Home";
 import GridViewIcon from "@mui/icons-material/GridView";
 import CategoryIcon from "@mui/icons-material/Category";
 import SettingsIcon from "@mui/icons-material/Settings";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { MenuItemType } from "antd/es/menu/interface";
 import * as Styled from './styled';
 import { MenuOutlined } from "@mui/icons-material";
+import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 
 const { Text } = Typography;
 
@@ -52,10 +54,19 @@ export default function DashboardLayout() {
         <Menu
           items={menuItems}
           theme="dark"
-          selectedKeys={[keys[keys.length - 1]]}
+          selectedKeys={keys.slice(1)}
         />
       </Layout.Sider>
       <Layout className="p-8 pb-0 max-md:p-4">
+        <Flex>
+          <Button
+            type="link"
+            icon={<KeyboardBackspaceOutlinedIcon fontSize="small" />}
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </Button>
+        </Flex>
         <Layout.Content
           style={{ background: colorBgContainer }}
           className="rounded-lg"

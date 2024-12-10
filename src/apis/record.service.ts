@@ -1,8 +1,10 @@
 import AxiosService from "./axios.service";
 
 export default class RecordService {
-  static async listRecords(boardId: number) {
-    const url = `/api/board/${boardId}/record`;
+  static async listRecords(boardId: number, query: ListRecordsQuery) {
+    const searchParams = new URLSearchParams();
+    if (query.date) searchParams.set("date", query.date.toISOString());
+    const url = `/api/board/${boardId}/record?${searchParams.toString()}`;
     const response = await AxiosService.get<RecordResponse[]>(url);
     return response.data;
   }
@@ -28,6 +30,10 @@ export default class RecordService {
     const response = await AxiosService.delete(url);
     return response.data;
   }
+}
+
+export interface ListRecordsQuery {
+  date?: Date;
 }
 
 export interface CreateRecordRequest {

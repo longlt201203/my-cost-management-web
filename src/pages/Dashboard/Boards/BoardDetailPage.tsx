@@ -1,6 +1,6 @@
 import { Button, Flex, message, Skeleton, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import BoardService, { BoardResponse } from "../../../apis/board.service";
 import { useErrorBoundary } from "react-error-boundary";
 import handleError from "../../../etc/handle-error";
@@ -28,6 +28,7 @@ export default function BoardDetailPage() {
     createdAt: "",
   };
 
+  const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -83,6 +84,8 @@ export default function BoardDetailPage() {
   }, []);
 
   useEffect(() => {
+    setBoardRecords([]);
+    setIsRecordTableLoading(true);
     if (currentTimeout) clearTimeout(currentTimeout);
     setCurrentTimeout(
       setTimeout(() => {
@@ -151,26 +154,33 @@ export default function BoardDetailPage() {
                 >
                   Add Record
                 </Button>
-                <Button onClick={() => {}}>View Analysis</Button>
+                <Button
+                  onClick={() => {
+                    navigate(`/analytics/${boardId}`);
+                  }}
+                >
+                  View Analysis
+                </Button>
               </Flex>
               <Flex>
                 <ControlledDatePicker
                   value={dayjs(listRecordsQuery.date)}
                   onChange={(v) =>
                     updateListRecordsQuery({
-                      date: v.toDate(),
+                      date: v?.toDate(),
                     })
                   }
+                  format="DD/MM/YYYY"
+                  maxDate={dayjs()}
                 />
               </Flex>
               <Table<RecordTableItemType>
                 loading={isRecordTableLoading}
+                pagination={false}
                 dataSource={boardRecords.map((item, index) => ({
                   ...item,
                   index: index + 1,
-                  createdAt: dayjs(item.createdAt).format(
-                    "DD/MM/YYYY HH:mm:ss"
-                  ),
+                  createdAt: dayjs(item.createdAt).format("HH:mm:ss"),
                   key: item.id.toString(),
                 }))}
                 columns={[

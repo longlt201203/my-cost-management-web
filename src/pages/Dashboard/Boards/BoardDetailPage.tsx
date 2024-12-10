@@ -1,13 +1,13 @@
 import { Button, Flex, message, Skeleton, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BoardService, { BoardResponse } from "../../../apis/board.service";
 import { useErrorBoundary } from "react-error-boundary";
 import handleError from "../../../etc/handle-error";
 import RecordService, { RecordResponse } from "../../../apis/record.service";
 import dayjs from "dayjs";
 import RecordModal from "./RecordModal";
-import { DeleteOutlined, EditOutlined } from "@mui/icons-material";
+import { ArrowBack, DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import DeleteRecordModal from "./DeleteRecordModal";
 
 const { Title } = Typography;
@@ -24,6 +24,7 @@ export default function BoardDetailPage() {
     createdAt: "",
   };
 
+  const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
   const { boardId } = useParams();
@@ -104,8 +105,18 @@ export default function BoardDetailPage() {
       <div className="p-4">
         {board ? (
           <>
-            <Flex vertical gap="middle">
-              <Title level={2}>{board?.title}</Title>
+            <Flex vertical gap="large">
+              <Flex align="center" gap="large">
+                <Button
+                  type="text"
+                  shape="circle"
+                  icon={<ArrowBack />}
+                  onClick={() => navigate('/boards')}
+                />
+                <Title level={2} style={{ marginBottom: 0 }}>
+                  {board?.title}
+                </Title>
+              </Flex>
               <Flex gap="small">
                 <Button
                   type="primary"
@@ -116,7 +127,7 @@ export default function BoardDetailPage() {
                 >
                   Add Record
                 </Button>
-                <Button onClick={() => {}}>View Analysis</Button>
+                <Button onClick={() => { }}>View Analysis</Button>
               </Flex>
               <Table<RecordTableItemType>
                 dataSource={boardRecords.map((item, index) => ({

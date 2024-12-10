@@ -102,6 +102,7 @@ export default function DashboardLayout() {
         <Menu
           items={menuItems}
           selectedKeys={[keys[keys.length - 1]]}
+          onSelect={() => setOpen(false)}
         />
       </Styled.DrawerStyled>
     </Layout>

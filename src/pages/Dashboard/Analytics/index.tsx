@@ -11,6 +11,7 @@ import { useErrorBoundary } from "react-error-boundary";
 import handleError from "../../../etc/handle-error";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
+import Chart from "react-apexcharts";
 
 const { Title, Text } = Typography;
 
@@ -31,7 +32,7 @@ export default function DashboardAnalyticsPage() {
   const [board, setBoard] = useState<BoardResponse>();
   const [getDailyAnalysisQuery, setGetDailyAnalysisQuery] =
     useState<GetDailyAnalysisQuery>({
-      date: dayjs(searchParams.get("date") || undefined).toDate(),
+      date: dayjs.utc(searchParams.get("date") || undefined).toDate(),
     });
   const [getDailyAnalysisTimeout, setGetDailyAnalysisTimeout] =
     useState<number>();
@@ -204,6 +205,33 @@ export default function DashboardAnalyticsPage() {
               <Flex>
                 <ControlledDatePicker picker="month" />
               </Flex>
+              <Chart
+                type="bar"
+                options={{
+                  dataLabels: {
+                    enabled: false,
+                  },
+                  plotOptions: {
+                    bar: {
+                      horizontal: false,
+                      borderRadius: 4,
+                    },
+                  },
+                  chart: {
+                    toolbar: {
+                      show: false,
+                    },
+                  },
+                }}
+                series={[
+                  {
+                    name: "Daily Spent",
+                    data: Array.from({ length: 30 }, () =>
+                      Math.floor(1 + Math.random() * 100)
+                    ),
+                  },
+                ]}
+              />
             </Flex>
           </Col>
           <Col
@@ -217,6 +245,33 @@ export default function DashboardAnalyticsPage() {
               <Flex>
                 <ControlledDatePicker picker="year" />
               </Flex>
+              <Chart
+                type="bar"
+                options={{
+                  dataLabels: {
+                    enabled: false,
+                  },
+                  plotOptions: {
+                    bar: {
+                      horizontal: false,
+                      borderRadius: 4,
+                    },
+                  },
+                  chart: {
+                    toolbar: {
+                      show: false,
+                    },
+                  },
+                }}
+                series={[
+                  {
+                    name: "Daily Spent",
+                    data: Array.from({ length: 12 }, () =>
+                      Math.floor(1 + Math.random() * 100)
+                    ),
+                  },
+                ]}
+              />
             </Flex>
           </Col>
         </Row>

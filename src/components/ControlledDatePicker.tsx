@@ -17,6 +17,8 @@ export default function ControlledDatePicker({
   format,
   maxDate,
 }: ControlledDatePickerProps) {
+  const currentDate = value || dayjs();
+
   return (
     <Flex justify="center" align="center" gap="small">
       <Button
@@ -25,16 +27,14 @@ export default function ControlledDatePicker({
         type="text"
         onClick={() => {
           if (onChange) {
-            const d = value || dayjs();
+            const d = currentDate || dayjs();
             onChange(d.subtract(1, "day"));
           }
         }}
       ></Button>
       <DatePicker
-        onChange={(v) => {
-          onChange && onChange(dayjs(v));
-        }}
-        value={value}
+        onChange={(v) => onChange && onChange(dayjs.utc(v))}
+        value={currentDate}
         picker={picker}
         format={format}
         maxDate={maxDate}
@@ -45,11 +45,15 @@ export default function ControlledDatePicker({
         type="text"
         onClick={() => {
           if (onChange) {
-            let d = value || dayjs();
+            let d = currentDate || dayjs();
             onChange(d.add(1, "day"));
           }
         }}
-        disabled={maxDate?.isSame(value, "date")}
+        disabled={
+          maxDate &&
+          (dayjs(value).isSame(maxDate, "date") ||
+            dayjs(value).isAfter(maxDate, "date"))
+        }
       ></Button>
     </Flex>
   );

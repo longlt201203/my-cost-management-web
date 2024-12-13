@@ -1,9 +1,12 @@
+import dayjs from "dayjs";
 import AxiosService from "./axios.service";
 
 export default class RecordService {
   static async listRecords(boardId: number, query: ListRecordsQuery) {
+    const tz = dayjs.tz.guess();
     const searchParams = new URLSearchParams();
-    if (query.date) searchParams.set("date", query.date.toISOString());
+    if (query.date)
+      searchParams.set("date", dayjs(query.date).tz(tz).toISOString());
     const url = `/api/board/${boardId}/record?${searchParams.toString()}`;
     const response = await AxiosService.get<RecordResponse[]>(url);
     return response.data;

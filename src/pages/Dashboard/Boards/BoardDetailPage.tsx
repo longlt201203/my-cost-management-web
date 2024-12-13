@@ -179,7 +179,7 @@ export default function BoardDetailPage() {
                   value={dayjs(listRecordsQuery.date)}
                   onChange={(v) =>
                     updateListRecordsQuery({
-                      date: v.utc().toDate(),
+                      date: v.toDate(),
                     })
                   }
                   format="DD/MM/YYYY"

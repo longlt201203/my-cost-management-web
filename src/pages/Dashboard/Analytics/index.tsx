@@ -32,7 +32,7 @@ export default function DashboardAnalyticsPage() {
   const [board, setBoard] = useState<BoardResponse>();
   const [getDailyAnalysisQuery, setGetDailyAnalysisQuery] =
     useState<GetDailyAnalysisQuery>({
-      date: dayjs.utc(searchParams.get("date") || undefined).toDate(),
+      date: dayjs(searchParams.get("date") || undefined).toDate(),
     });
   const [getDailyAnalysisTimeout, setGetDailyAnalysisTimeout] =
     useState<number>();
@@ -129,7 +129,7 @@ export default function DashboardAnalyticsPage() {
             <ControlledDatePicker
               value={dayjs(getDailyAnalysisQuery.date)}
               onChange={(v) =>
-                updateGetDailyAnalysisQuery({ date: v.utc().toDate() })
+                updateGetDailyAnalysisQuery({ date: v.toDate() })
               }
               format="DD/MM/YYYY"
               maxDate={dayjs()}

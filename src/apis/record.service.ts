@@ -5,10 +5,7 @@ export default class RecordService {
   static async listRecords(boardId: number, query: ListRecordsQuery) {
     const searchParams = new URLSearchParams();
     if (query.date)
-      searchParams.set(
-        "date",
-        dayjs(query.date).local().format("YYYY-MM-DDTHH:mm:ssZ")
-      );
+      searchParams.set("date", dayjs(query.date).local().format("YYYY-MM-DD"));
     const url = `/api/board/${boardId}/record?${searchParams.toString()}`;
     const response = await AxiosService.get<RecordResponse[]>(url);
     return response.data;

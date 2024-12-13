@@ -33,7 +33,7 @@ export default function ControlledDatePicker({
         }}
       ></Button>
       <DatePicker
-        onChange={(v) => onChange && onChange(dayjs(v || undefined))}
+        onChange={(v) => onChange && onChange(v ? v : dayjs())}
         value={currentDate}
         picker={picker}
         format={format}

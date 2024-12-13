@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import AxiosService from "./axios.service";
 
 export default class BoardService {
@@ -33,7 +34,11 @@ export default class BoardService {
 
   static async getDailyAnalysis(boardId: number, query: GetDailyAnalysisQuery) {
     const searchParams = new URLSearchParams();
-    if (query.date) searchParams.set("date", query.date.toISOString());
+    if (query.date)
+      searchParams.set(
+        "date",
+        dayjs(query.date).local().format("YYYY-MM-DDTHH:mm:ssZ")
+      );
     const url = `/api/board/${boardId}/analysis/daily?${searchParams.toString()}`;
     const response = await AxiosService.get<DailyAnalysisResponse>(url);
     return response.data;

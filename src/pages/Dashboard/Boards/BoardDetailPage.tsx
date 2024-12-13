@@ -44,7 +44,9 @@ export default function BoardDetailPage() {
   const [isDeleteRecordModalLoading, setIsDeleteRecordModalLoading] =
     useState(false);
   const [listRecordsQuery, setListRecordsQuery] = useState<ListRecordsQuery>({
-    date: dayjs(searchParams.get("date") || undefined).toDate(),
+    date: dayjs(searchParams.get("date") || undefined)
+      .startOf("date")
+      .toDate(),
   });
   const [isRecordTableLoading, setIsRecordTableLoading] = useState(false);
 
@@ -148,7 +150,7 @@ export default function BoardDetailPage() {
                   type="text"
                   shape="circle"
                   icon={<ArrowBack />}
-                  onClick={() => navigate('/boards')}
+                  onClick={() => navigate("/boards")}
                 />
                 <Title level={2} style={{ marginBottom: 0 }}>
                   {board?.title}
@@ -177,7 +179,7 @@ export default function BoardDetailPage() {
                   value={dayjs(listRecordsQuery.date)}
                   onChange={(v) =>
                     updateListRecordsQuery({
-                      date: v?.toDate(),
+                      date: v.utc().toDate(),
                     })
                   }
                   format="DD/MM/YYYY"

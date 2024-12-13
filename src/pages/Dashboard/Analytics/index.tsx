@@ -129,7 +129,7 @@ export default function DashboardAnalyticsPage() {
             <ControlledDatePicker
               value={dayjs(getDailyAnalysisQuery.date)}
               onChange={(v) =>
-                updateGetDailyAnalysisQuery({ date: v?.toDate() })
+                updateGetDailyAnalysisQuery({ date: v.utc().toDate() })
               }
               format="DD/MM/YYYY"
               maxDate={dayjs()}

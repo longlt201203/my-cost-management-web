@@ -6,6 +6,8 @@ export default class RecordService {
     const searchParams = new URLSearchParams();
     if (query.date)
       searchParams.set("date", dayjs(query.date).local().format("YYYY-MM-DD"));
+    const timezone = dayjs.tz.guess();
+    searchParams.set("timezone", timezone);
     const url = `/api/board/${boardId}/record?${searchParams.toString()}`;
     const response = await AxiosService.get<RecordResponse[]>(url);
     return response.data;

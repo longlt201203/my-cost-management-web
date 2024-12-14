@@ -36,6 +36,8 @@ export default class BoardService {
     const searchParams = new URLSearchParams();
     if (query.date)
       searchParams.set("date", dayjs(query.date).local().format("YYYY-MM-DD"));
+    const timezone = dayjs.tz.guess();
+    searchParams.set("timezone", timezone);
     const url = `/api/board/${boardId}/analysis/daily?${searchParams.toString()}`;
     const response = await AxiosService.get<DailyAnalysisResponse>(url);
     return response.data;

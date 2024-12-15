@@ -4,6 +4,7 @@ import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
 import AuthService from "../../apis/auth.service";
 import handleError from "../../etc/handle-error";
 import { useErrorBoundary } from "react-error-boundary";
+import { useTranslation } from "react-i18next";
 
 const { Title, Link } = Typography;
 
@@ -14,6 +15,9 @@ interface LoginBasicFormType {
 }
 
 export default function LoginPage() {
+  const { t } = useTranslation();
+  // i18n.changeLanguage(localStorage.getItem("currentLanguage") || undefined);
+
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -46,7 +50,7 @@ export default function LoginPage() {
         align="center"
         className="mx-auto max-w-sm min-h-screen"
       >
-        <Title level={2}>Login Page</Title>
+        <Title level={2}>{t("login")}</Title>
         <Form<LoginBasicFormType>
           className="p-8 rounded-lg shadow-lg w-full"
           size="large"
@@ -60,21 +64,21 @@ export default function LoginPage() {
               placeholder="Email"
             />
           </Form.Item>
-          <Form.Item<LoginBasicFormType> name="password" label="Password">
+          <Form.Item<LoginBasicFormType> name="password" label={t("password")}>
             <Input.Password
               prefix={<PasswordOutlinedIcon fontSize="small" />}
-              placeholder="Password"
+              placeholder={t("password")}
             />
           </Form.Item>
           <Form.Item<LoginBasicFormType> name="remember">
             <Flex justify="space-between">
-              <Checkbox>Remember me</Checkbox>
-              <Link>Forgot password?</Link>
+              <Checkbox>{t("rememberMe")}</Checkbox>
+              <Link>{t("forgotPassword")}</Link>
             </Flex>
           </Form.Item>
           <Form.Item>
             <Button block type="primary" htmlType="submit">
-              Login
+              {t("login")}
             </Button>
           </Form.Item>
         </Form>

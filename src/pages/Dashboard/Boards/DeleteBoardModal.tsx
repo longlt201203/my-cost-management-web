@@ -1,5 +1,6 @@
 import { Modal, Typography } from "antd";
 import { BoardResponse } from "../../../apis/board.service";
+import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;
 
@@ -18,10 +19,12 @@ export default function DeleteBoardModal({
   isLoading,
   onCancel,
 }: DeleteBoardModalProps) {
+  const { t } = useTranslation();
+
   return (
     <Modal
-      title="Delete"
-      okText="Delete"
+      title={t("deleteBoard")}
+      okText={t("delete")}
       okButtonProps={{
         variant: "solid",
         color: "danger",
@@ -29,6 +32,7 @@ export default function DeleteBoardModal({
       }}
       onOk={() => onConfirmDelete && onConfirmDelete(board.id)}
       cancelButtonProps={{ disabled: isLoading }}
+      cancelText={t("cancel")}
       closable={false}
       maskClosable={!isLoading}
       open={isOpen}

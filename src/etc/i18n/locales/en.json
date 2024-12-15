@@ -1,0 +1,20 @@
+{
+  "login": "Login",
+  "password": "Password",
+  "rememberMe": "Remember me",
+  "forgotPassword": "Forgot password?",
+  "home": "Home",
+  "boards": "Boards",
+  "analytics": "Analytics",
+  "back": "Back",
+  "newBoard": "New Board",
+  "updateBoard": "Update Board",
+  "title": "Title",
+  "save": "Save",
+  "cancel": "Cancel",
+  "enterTitle": "Enter Title",
+  "currencyUnit": "Currency unit",
+  "selectCurrencyUnit": "Select Currency unit",
+  "deleteBoard": "Delete Board",
+  "delete": "Delete"
+}

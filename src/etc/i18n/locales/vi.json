@@ -1,0 +1,20 @@
+{
+  "login": "Đăng nhập",
+  "password": "Mật khẩu",
+  "rememberMe": "Ghi nhớ đăng nhập",
+  "forgotPassword": "Quên mật khẩu?",
+  "home": "Trang chủ",
+  "boards": "Bảng",
+  "analytics": "Phân tích",
+  "back": "Trở về",
+  "newBoard": "Tạo Bảng",
+  "updateBoard": "Cập nhật Bảng",
+  "title": "Tên",
+  "save": "Lưu",
+  "cancel": "Hủy",
+  "enterTitle": "Nhập Tên",
+  "currencyUnit": "Đơn vị tiền",
+  "selectCurrencyUnit": "Chọn đơn vị tiền",
+  "deleteBoard": "Xóa Bảng",
+  "delete": "Xóa"
+}

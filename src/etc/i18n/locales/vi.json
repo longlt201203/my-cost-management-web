@@ -35,5 +35,11 @@
   "amount": "Số tiền",
   "paymentMethod": "Phương thức thanh toán",
   "location": "Địa điểm",
-  "notes": "Ghi chú"
+  "notes": "Ghi chú",
+  "categories": "Phân loại",
+  "name": "Tên",
+  "addCategory": "Thêm phân loại",
+  "updateCategory": "Cập nhật phân loại",
+  "enterCategoryName": "Nhập tên phân loại",
+  "deleteCategoriesMessage": "Bạn có chắc muốn xóa các phân loại đã chọn?"
 }

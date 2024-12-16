@@ -1,6 +1,7 @@
 import { Button, Form, Input, Modal } from "antd";
 import { RecordResponse } from "../../../apis/record.service";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export interface RecordModalProps {
   record: RecordResponse;
@@ -17,6 +18,7 @@ export default function RecordModal({
   onCancel,
   onSubmit,
 }: RecordModalProps) {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -25,11 +27,12 @@ export default function RecordModal({
 
   return (
     <Modal
-      title={record.id ? "Update Record" : "Create Record"}
+      title={record.id ? t("updateRecord") : t("addRecord")}
       closable={false}
       maskClosable={!isLoading}
       open={isOpen}
       onCancel={onCancel}
+      cancelText={t("cancel")}
       cancelButtonProps={{ disabled: isLoading }}
       footer={(_, { CancelBtn }) => (
         <>
@@ -41,7 +44,7 @@ export default function RecordModal({
               form.submit();
             }}
           >
-            Save
+            {t("save")}
           </Button>
         </>
       )}
@@ -56,7 +59,7 @@ export default function RecordModal({
           <Input />
         </Form.Item>
         <Form.Item<RecordResponse> name="content">
-          <Input placeholder="Enter content..." />
+          <Input placeholder={t("enterContent")} />
         </Form.Item>
       </Form>
     </Modal>

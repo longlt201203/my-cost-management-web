@@ -163,7 +163,7 @@ export default function DashboardBoardsPage() {
                   description={
                     <>
                       <Text type="secondary">
-                        Currency Unit:{" "}
+                        {t("currencyUnit")}:{" "}
                         {getCurrencyUnit(item.currencyUnit)?.label}
                       </Text>
                     </>

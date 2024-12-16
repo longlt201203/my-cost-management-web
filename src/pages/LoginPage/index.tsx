@@ -1,10 +1,23 @@
-import { Button, Checkbox, Flex, Form, Input, message, Typography } from "antd";
+import {
+  Button,
+  Checkbox,
+  Dropdown,
+  Flex,
+  FloatButton,
+  Form,
+  Input,
+  MenuProps,
+  message,
+  Typography,
+} from "antd";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
 import AuthService from "../../apis/auth.service";
 import handleError from "../../etc/handle-error";
 import { useErrorBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
+import { GlobalOutlined } from "@ant-design/icons";
+import { Languages } from "../../etc/i18n";
 
 const { Title, Link } = Typography;
 
@@ -15,8 +28,12 @@ interface LoginBasicFormType {
 }
 
 export default function LoginPage() {
-  const { t } = useTranslation();
-  // i18n.changeLanguage(localStorage.getItem("currentLanguage") || undefined);
+  const { t, i18n } = useTranslation();
+
+  const handleChangeLanguage: MenuProps["onClick"] = (e) => {
+    localStorage.setItem("currentLanguage", e.key);
+    i18n.changeLanguage(e.key);
+  };
 
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
@@ -83,6 +100,18 @@ export default function LoginPage() {
           </Form.Item>
         </Form>
       </Flex>
+      <Dropdown
+        menu={{
+          items: Object.entries(Languages).map(([key, value]) => ({
+            key: key,
+            label: value,
+          })),
+          onClick: handleChangeLanguage,
+        }}
+        placement="bottomRight"
+      >
+        <FloatButton icon={<GlobalOutlined />} />
+      </Dropdown>
     </>
   );
 }

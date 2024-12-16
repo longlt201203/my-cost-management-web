@@ -1,6 +1,7 @@
 import { Button, Dropdown, Flex, Layout, MenuProps, theme } from "antd";
 import { useTranslation } from "react-i18next";
-import LanguageIcon from "@mui/icons-material/Language";
+import { GlobalOutlined } from "@ant-design/icons";
+import { Languages } from "../../etc/i18n";
 
 export default function Header() {
   const { i18n } = useTranslation();
@@ -21,22 +22,16 @@ export default function Header() {
       <Flex justify="end" align="center" className="h-full">
         <Dropdown
           menu={{
-            items: [
-              {
-                key: "en",
-                label: "English",
-              },
-              {
-                key: "vi",
-                label: "Tiếng Việt",
-              },
-            ],
+            items: Object.entries(Languages).map(([key, value]) => ({
+              key: key,
+              label: value,
+            })),
             onClick: handleChangeLanguage,
           }}
           placement="bottomRight"
         >
-          <Button size="small" type="text">
-            <LanguageIcon fontSize="small" />
+          <Button type="text">
+            <GlobalOutlined />
           </Button>
         </Dropdown>
       </Flex>

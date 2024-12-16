@@ -13,6 +13,7 @@ import RecordModal from "./RecordModal";
 import { ArrowBack, DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import DeleteRecordModal from "./DeleteRecordModal";
 import ControlledDatePicker from "../../../components/ControlledDatePicker";
+import { useTranslation } from "react-i18next";
 
 const { Title } = Typography;
 
@@ -28,6 +29,7 @@ export default function BoardDetailPage() {
     createdAt: "",
   };
 
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
@@ -164,14 +166,14 @@ export default function BoardDetailPage() {
                     setIsRecordModalOpen(true);
                   }}
                 >
-                  Add Record
+                  {t("addRecord")}
                 </Button>
                 <Button
                   onClick={() => {
                     navigate(`/analytics/${boardId}`);
                   }}
                 >
-                  View Analysis
+                  {t("viewAnalytics")}
                 </Button>
               </Flex>
               <Flex>
@@ -203,12 +205,12 @@ export default function BoardDetailPage() {
                   },
                   {
                     dataIndex: "content",
-                    title: "Content",
+                    title: t("content"),
                     key: "content",
                   },
                   {
                     dataIndex: "createdAt",
-                    title: "Created At",
+                    title: t("createdAt"),
                     key: "createdAt",
                   },
                   {
@@ -239,6 +241,7 @@ export default function BoardDetailPage() {
                       ),
                   },
                 ]}
+                scroll={{ x: 720 }}
               />
             </Flex>
           </>

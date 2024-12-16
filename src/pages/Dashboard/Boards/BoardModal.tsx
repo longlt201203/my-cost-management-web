@@ -2,6 +2,7 @@ import { Button, Form, Input, Modal, Select } from "antd";
 import { BoardResponse } from "../../../apis/board.service";
 import { useEffect } from "react";
 import CurrencyUnit from "../../../etc/currency-unit";
+import { useTranslation } from "react-i18next";
 
 export interface BoardModalProps {
   board: BoardResponse;
@@ -18,6 +19,7 @@ export default function BoardModal({
   isLoading,
   onCancel,
 }: BoardModalProps) {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -28,9 +30,10 @@ export default function BoardModal({
     <Modal
       closable={false}
       maskClosable={!isLoading}
+      cancelText={t("cancel")}
       cancelButtonProps={{ disabled: isLoading }}
       open={isOpen}
-      title={board.id ? "Update Board" : "Create Board"}
+      title={board.id ? t("updateBoard") : t("newBoard")}
       onCancel={onCancel}
       footer={(_, { CancelBtn }) => (
         <>
@@ -42,7 +45,7 @@ export default function BoardModal({
             type="primary"
             loading={isLoading}
           >
-            Save
+            {t("save")}
           </Button>
         </>
       )}
@@ -56,13 +59,16 @@ export default function BoardModal({
         <Form.Item<BoardResponse> hidden name="id">
           <Input />
         </Form.Item>
-        <Form.Item<BoardResponse> label="Title" name="title">
-          <Input placeholder="Enter Title" />
+        <Form.Item<BoardResponse> label={t("title")} name="title">
+          <Input placeholder={t("enterTitle")} />
         </Form.Item>
         {!board.id && (
-          <Form.Item<BoardResponse> label="Currency Unit" name="currencyUnit">
+          <Form.Item<BoardResponse>
+            label={t("currencyUnit")}
+            name="currencyUnit"
+          >
             <Select
-              placeholder="Select Currency Unit"
+              placeholder={t("selectCurrencyUnit")}
               showSearch
               options={Object.values(CurrencyUnit).map((item) => ({
                 value: item.code,

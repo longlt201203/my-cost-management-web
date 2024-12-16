@@ -12,6 +12,7 @@ import handleError from "../../../etc/handle-error";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Chart from "react-apexcharts";
+import { useTranslation } from "react-i18next";
 
 const { Title, Text } = Typography;
 
@@ -22,7 +23,7 @@ export interface DailyAnalysisTableItemType extends ExtractedRecordResponse {
 
 export default function DashboardAnalyticsPage() {
   const { boardId } = useParams();
-
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -109,14 +110,14 @@ export default function DashboardAnalyticsPage() {
     <>
       {contextHolder}
       <Flex className="p-4" gap="middle" vertical>
-        <Title level={2}>Analytics</Title>
+        <Title level={2}>{t("analytics")}</Title>
         <Flex>
           <Select
             options={boards.map((board) => ({
               label: board.title,
               value: board.id,
             }))}
-            placeholder="Select board"
+            placeholder={t("selectBoard")}
             onChange={(v) => {
               navigate(`/analytics/${v}`);
             }}
@@ -124,7 +125,7 @@ export default function DashboardAnalyticsPage() {
           />
         </Flex>
         <Flex vertical gap="small">
-          <Title level={4}>Daily</Title>
+          <Title level={4}>{t("daily")}</Title>
           <Flex>
             <ControlledDatePicker
               value={dayjs(getDailyAnalysisQuery.date)}
@@ -146,33 +147,33 @@ export default function DashboardAnalyticsPage() {
               {
                 dataIndex: "description",
                 key: "description",
-                title: "Description",
+                title: t("description"),
               },
               {
                 dataIndex: "time",
                 key: "time",
-                title: "Time",
+                title: t("time"),
               },
               {
                 dataIndex: "amount",
                 key: "amount",
-                title: "Amount",
+                title: t("amount"),
                 render: (value) => `${value} ${board?.currencyUnit}`,
               },
               {
                 dataIndex: "paymentMethod",
                 key: "paymentMethod",
-                title: "Payment Method",
+                title: t("paymentMethod"),
               },
               {
                 dataIndex: "location",
                 key: "location",
-                title: "Location",
+                title: t("location"),
               },
               {
                 dataIndex: "notes",
                 key: "notes",
-                title: "Notes",
+                title: t("notes"),
               },
             ]}
             dataSource={dailyAnalytics?.extractedRecords.map((item, index) => ({
@@ -181,12 +182,12 @@ export default function DashboardAnalyticsPage() {
               key: String(item.id),
               time: dayjs(item.time).format("HH:mm:ss"),
             }))}
-            scroll={{ x: 768 }}
+            scroll={{ x: 1280 }}
             loading={isDailyAnalysisLoading}
             footer={() => (
               <Flex vertical>
                 <Text>
-                  <Text strong>Total Spent:</Text> {dailyAnalytics?.total}{" "}
+                  <Text strong>{t("totalSpent")}:</Text> {dailyAnalytics?.total}{" "}
                   {board?.currencyUnit}
                 </Text>
               </Flex>
@@ -201,7 +202,7 @@ export default function DashboardAnalyticsPage() {
             span={24}
           >
             <Flex vertical gap="small">
-              <Title level={4}>Monthly</Title>
+              <Title level={4}>{t("monthly")}</Title>
               <Flex>
                 <ControlledDatePicker picker="month" />
               </Flex>
@@ -241,7 +242,7 @@ export default function DashboardAnalyticsPage() {
             span={24}
           >
             <Flex vertical gap="small">
-              <Title level={4}>Yearly</Title>
+              <Title level={4}>{t("yearly")}</Title>
               <Flex>
                 <ControlledDatePicker picker="year" />
               </Flex>

@@ -1,9 +1,23 @@
-import { Button, Checkbox, Flex, Form, Input, message, Typography } from "antd";
+import {
+  Button,
+  Checkbox,
+  Dropdown,
+  Flex,
+  FloatButton,
+  Form,
+  Input,
+  MenuProps,
+  message,
+  Typography,
+} from "antd";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
 import AuthService from "../../apis/auth.service";
 import handleError from "../../etc/handle-error";
 import { useErrorBoundary } from "react-error-boundary";
+import { useTranslation } from "react-i18next";
+import { GlobalOutlined } from "@ant-design/icons";
+import { Languages } from "../../etc/i18n";
 
 const { Title, Link } = Typography;
 
@@ -14,6 +28,13 @@ interface LoginBasicFormType {
 }
 
 export default function LoginPage() {
+  const { t, i18n } = useTranslation();
+
+  const handleChangeLanguage: MenuProps["onClick"] = (e) => {
+    localStorage.setItem("currentLanguage", e.key);
+    i18n.changeLanguage(e.key);
+  };
+
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -46,7 +67,7 @@ export default function LoginPage() {
         align="center"
         className="mx-auto max-w-sm min-h-screen"
       >
-        <Title level={2}>Login Page</Title>
+        <Title level={2}>{t("login")}</Title>
         <Form<LoginBasicFormType>
           className="p-8 rounded-lg shadow-lg w-full"
           size="large"
@@ -60,25 +81,37 @@ export default function LoginPage() {
               placeholder="Email"
             />
           </Form.Item>
-          <Form.Item<LoginBasicFormType> name="password" label="Password">
+          <Form.Item<LoginBasicFormType> name="password" label={t("password")}>
             <Input.Password
               prefix={<PasswordOutlinedIcon fontSize="small" />}
-              placeholder="Password"
+              placeholder={t("password")}
             />
           </Form.Item>
           <Form.Item<LoginBasicFormType> name="remember">
             <Flex justify="space-between">
-              <Checkbox>Remember me</Checkbox>
-              <Link>Forgot password?</Link>
+              <Checkbox>{t("rememberMe")}</Checkbox>
+              <Link>{t("forgotPassword")}</Link>
             </Flex>
           </Form.Item>
           <Form.Item>
             <Button block type="primary" htmlType="submit">
-              Login
+              {t("login")}
             </Button>
           </Form.Item>
         </Form>
       </Flex>
+      <Dropdown
+        menu={{
+          items: Object.entries(Languages).map(([key, value]) => ({
+            key: key,
+            label: value,
+          })),
+          onClick: handleChangeLanguage,
+        }}
+        placement="bottomRight"
+      >
+        <FloatButton icon={<GlobalOutlined />} />
+      </Dropdown>
     </>
   );
 }

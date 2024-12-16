@@ -1,5 +1,6 @@
 import { Modal, Typography } from "antd";
 import { BoardResponse } from "../../../apis/board.service";
+import { Trans, useTranslation } from "react-i18next";
 
 const { Text } = Typography;
 
@@ -18,10 +19,12 @@ export default function DeleteBoardModal({
   isLoading,
   onCancel,
 }: DeleteBoardModalProps) {
+  const { t } = useTranslation();
+
   return (
     <Modal
-      title="Delete"
-      okText="Delete"
+      title={t("deleteBoard")}
+      okText={t("delete")}
       okButtonProps={{
         variant: "solid",
         color: "danger",
@@ -29,13 +32,21 @@ export default function DeleteBoardModal({
       }}
       onOk={() => onConfirmDelete && onConfirmDelete(board.id)}
       cancelButtonProps={{ disabled: isLoading }}
+      cancelText={t("cancel")}
       closable={false}
       maskClosable={!isLoading}
       open={isOpen}
       onCancel={onCancel}
     >
       <Text>
-        Are you sure you want to delete board <Text strong>{board.title}</Text>?
+        <Trans
+          i18nKey="deleteBoardMessage"
+          values={{ title: board.title }}
+          components={{ 1: <Text strong /> }}
+        >
+          Are you sure you want to delete board{" "}
+          <Text strong>{board.title}</Text>?
+        </Trans>
       </Text>
     </Modal>
   );

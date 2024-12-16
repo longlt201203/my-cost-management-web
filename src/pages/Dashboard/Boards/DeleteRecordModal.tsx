@@ -1,5 +1,6 @@
 import { Modal, Typography } from "antd";
 import { RecordResponse } from "../../../apis/record.service";
+import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;
 
@@ -18,19 +19,22 @@ export default function DeleteRecordModal({
   onCancel,
   onConfirmDelete,
 }: DeleteRecordModalProps) {
+  const { t } = useTranslation();
+
   return (
     <Modal
-      title="Delete"
+      title={t("delete")}
       closable={false}
       maskClosable={!isLoading}
-      okText="Delete"
+      okText={t("delete")}
+      cancelText={t("cancel")}
       okButtonProps={{ variant: "solid", color: "danger", loading: isLoading }}
       cancelButtonProps={{ disabled: isLoading }}
       onCancel={onCancel}
       onOk={() => onConfirmDelete && onConfirmDelete(record.id)}
       open={isOpen}
     >
-      <Text>Are you sure you want to delete this record?</Text>
+      <Text>{t("deleteRecordMessage")}</Text>
     </Modal>
   );
 }

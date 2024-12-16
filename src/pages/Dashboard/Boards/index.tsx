@@ -13,10 +13,13 @@ import { useErrorBoundary } from "react-error-boundary";
 import DeleteBoardModal from "./DeleteBoardModal";
 import CurrencyUnit, { getCurrencyUnit } from "../../../etc/currency-unit";
 import placeholder_600x400 from "../../../assets/placeholder_600x400.svg";
+import { useTranslation } from "react-i18next";
 
 const { Title, Text } = Typography;
 
 export default function DashboardBoardsPage() {
+  const { t } = useTranslation();
+
   const emptyBoard: BoardResponse = {
     id: 0,
     title: "",
@@ -94,7 +97,7 @@ export default function DashboardBoardsPage() {
       {contextHolder}
       <Flex vertical gap="middle" className="p-4">
         <Title level={2} className="mb-0">
-          Boards
+          {t("boards")}
         </Title>
         <Flex>
           <Button
@@ -104,7 +107,7 @@ export default function DashboardBoardsPage() {
               setIsModalOpen(true);
             }}
           >
-            New Board
+            {t("newBoard")}
           </Button>
         </Flex>
         <Row gutter={[16, 16]}>
@@ -160,7 +163,7 @@ export default function DashboardBoardsPage() {
                   description={
                     <>
                       <Text type="secondary">
-                        Currency Unit:{" "}
+                        {t("currencyUnit")}:{" "}
                         {getCurrencyUnit(item.currencyUnit)?.label}
                       </Text>
                     </>

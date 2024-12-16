@@ -110,7 +110,9 @@ export default function DashboardAnalyticsPage() {
     <>
       {contextHolder}
       <Flex className="p-4" gap="middle" vertical>
-        <Title level={2}>{t("analytics")}</Title>
+        <Title level={2} className="mb-0">
+          {t("analytics")}
+        </Title>
         <Flex>
           <Select
             options={boards.map((board) => ({

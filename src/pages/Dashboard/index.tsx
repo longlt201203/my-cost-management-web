@@ -54,8 +54,9 @@ export default function DashboardLayout() {
     },
     {
       key: "categories",
-      label: "Categories",
+      label: t("categories"),
       icon: <CategoryIcon />,
+      onClick: () => navigate("/categories"),
     },
     {
       key: "settings",

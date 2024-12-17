@@ -18,11 +18,11 @@ export interface CategoryTableItemType extends CategoryResponse {
 }
 
 export default function DashboardCategoriesPage() {
+  const { t, i18n } = useTranslation();
   const emptyCategory: CategoryResponse = {
     id: 0,
     name: "",
   };
-  const { t } = useTranslation();
   const [messageApi, contextHolder] = message.useMessage();
   const { showBoundary } = useErrorBoundary();
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
@@ -39,7 +39,9 @@ export default function DashboardCategoriesPage() {
     setDeleteIds([]);
     setIsCategoriesLoading(true);
     try {
-      const categories = await CategoriesService.listCategories();
+      const categories = await CategoriesService.listCategories({
+        language: i18n.language,
+      });
       setCategories(categories);
     } catch (err) {
       handleError(err, showBoundary, messageApi);
@@ -57,6 +59,7 @@ export default function DashboardCategoriesPage() {
       } else {
         await CategoriesService.create({
           name: category.name,
+          language: i18n.language,
         });
       }
       messageApi.success({
@@ -89,7 +92,7 @@ export default function DashboardCategoriesPage() {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [i18n.language]);
 
   return (
     <>

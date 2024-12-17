@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 const { Title, Text } = Typography;
 
 export default function DashboardBoardsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const emptyBoard: BoardResponse = {
     id: 0,
@@ -26,6 +26,7 @@ export default function DashboardBoardsPage() {
     currencyUnit: CurrencyUnit.kVND.code,
     createdAt: "",
     updatedAt: "",
+    language: i18n.language,
   };
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -58,12 +59,12 @@ export default function DashboardBoardsPage() {
       if (board.id) {
         await BoardService.update(board.id, {
           title: board.title,
-          currencyUnit: board.currencyUnit,
         });
       } else {
         await BoardService.create({
           title: board.title,
           currencyUnit: board.currencyUnit,
+          language: board.language,
         });
       }
       setIsModalOpen(false);

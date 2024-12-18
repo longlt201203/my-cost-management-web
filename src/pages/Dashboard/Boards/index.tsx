@@ -14,6 +14,7 @@ import DeleteBoardModal from "./DeleteBoardModal";
 import CurrencyUnit, { getCurrencyUnit } from "../../../etc/currency-unit";
 import placeholder_600x400 from "../../../assets/placeholder_600x400.svg";
 import { useTranslation } from "react-i18next";
+import { Languages } from "../../../etc/i18n";
 
 const { Title, Text } = Typography;
 
@@ -162,12 +163,16 @@ export default function DashboardBoardsPage() {
                 <Card.Meta
                   title={item.title}
                   description={
-                    <>
+                    <Flex vertical>
                       <Text type="secondary">
                         {t("currencyUnit")}:{" "}
                         {getCurrencyUnit(item.currencyUnit)?.label}
                       </Text>
-                    </>
+                      <Text type="secondary">
+                        {t("language")}:{" "}
+                        {Languages[item.language as keyof typeof Languages]}
+                      </Text>
+                    </Flex>
                   }
                 />
               </Card>

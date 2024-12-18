@@ -3,6 +3,7 @@ import { BoardResponse } from "../../../apis/board.service";
 import { useEffect } from "react";
 import CurrencyUnit from "../../../etc/currency-unit";
 import { useTranslation } from "react-i18next";
+import { Languages } from "../../../etc/i18n";
 
 export interface BoardModalProps {
   board: BoardResponse;
@@ -63,19 +64,31 @@ export default function BoardModal({
           <Input placeholder={t("enterTitle")} />
         </Form.Item>
         {!board.id && (
-          <Form.Item<BoardResponse>
-            label={t("currencyUnit")}
-            name="currencyUnit"
-          >
-            <Select
-              placeholder={t("selectCurrencyUnit")}
-              showSearch
-              options={Object.values(CurrencyUnit).map((item) => ({
-                value: item.code,
-                label: item.label,
-              }))}
-            />
-          </Form.Item>
+          <>
+            <Form.Item<BoardResponse>
+              label={t("currencyUnit")}
+              name="currencyUnit"
+            >
+              <Select
+                placeholder={t("selectCurrencyUnit")}
+                showSearch
+                options={Object.values(CurrencyUnit).map((item) => ({
+                  value: item.code,
+                  label: item.label,
+                }))}
+              />
+            </Form.Item>
+            <Form.Item<BoardResponse> label={t("language")} name="language">
+              <Select
+                placeholder={t("selectLanguage")}
+                showSearch
+                options={Object.entries(Languages).map(([key, value]) => ({
+                  value: key,
+                  label: value,
+                }))}
+              />
+            </Form.Item>
+          </>
         )}
       </Form>
     </Modal>

@@ -41,5 +41,6 @@
   "addCategory": "Thêm phân loại",
   "updateCategory": "Cập nhật phân loại",
   "enterCategoryName": "Nhập tên phân loại",
-  "deleteCategoriesMessage": "Bạn có chắc muốn xóa các phân loại đã chọn?"
+  "deleteCategoriesMessage": "Bạn có chắc muốn xóa các phân loại đã chọn?",
+  "language": "Ngôn ngữ"
 }

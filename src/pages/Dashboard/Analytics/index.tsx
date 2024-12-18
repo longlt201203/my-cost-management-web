@@ -13,6 +13,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Chart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
+import AnalysisService, { AnalysisDTO, MonthlyAnalysisChartResponse, MonthlyAnalysisResponse, YearlyAnalysisChartResponse, YearlyAnalysisResponse } from "../../../apis/analysis.service";
 
 const { Title, Text } = Typography;
 
@@ -38,6 +39,10 @@ export default function DashboardAnalyticsPage() {
   const [getDailyAnalysisTimeout, setGetDailyAnalysisTimeout] =
     useState<number>();
   const [isDailyAnalysisLoading, setIsDailyAnalysisLoading] = useState(false);
+  const [monthlyAnalysis, setMonthlyAnalysis] = useState<MonthlyAnalysisResponse>();
+  const [monthlyChartData, setMonthlyChartData] = useState<MonthlyAnalysisChartResponse>();
+  const [yearlyAnalysis, setYearlyAnalysis] = useState<YearlyAnalysisResponse>();
+  const [yearlyChartData, setYearlyChartData] = useState<YearlyAnalysisChartResponse>();
 
   const fetchBoards = async () => {
     try {
@@ -105,6 +110,60 @@ export default function DashboardAnalyticsPage() {
     };
     setGetDailyAnalysisQuery(newQuery);
   };
+
+  // Monthly Analysis
+  const fetchMonthlyAnalysis = async () => {
+    try {
+      const dto: AnalysisDTO = {
+        boardId: Number(boardId),
+        date: dayjs(),
+        timezone: "Asia/Ho_Chi_Minh",
+      }
+      const data = await AnalysisService.getMonthlyAnalysis(dto);
+      setMonthlyAnalysis(data);
+      const dataChart = await AnalysisService.getMonthAnalysisChart(dto);
+      setMonthlyChartData(dataChart);
+    } catch (err) {
+      handleError(err, showBoundary, messageApi);
+    }
+  };
+
+  useEffect(() => {
+    fetchMonthlyAnalysis();
+  }, []);
+
+  useEffect(() => {
+    if (boardId) {
+      fetchMonthlyAnalysis();
+    }
+  }, [boardId]);
+
+  //Yearly Analysis
+  const fetchYearlyAnalysis = async () => {
+    try {
+      const dto: AnalysisDTO = {
+        boardId: Number(boardId),
+        date: dayjs(),
+        timezone: "Asia/Ho_Chi_Minh"
+      };
+      const data = await AnalysisService.getYearlyAnalysis(dto);
+      setYearlyAnalysis(data);
+      const dataChart = await AnalysisService.getYearlyAnalysisChart(dto);
+      setYearlyChartData(dataChart);
+    } catch (err) {
+      handleError(err, showBoundary, messageApi);
+    }
+  };
+
+  useEffect(() => {
+    fetchYearlyAnalysis();
+  }, []);
+
+  useEffect(() => {
+    if (boardId) {
+      fetchYearlyAnalysis();
+    }
+  }, [boardId]);
 
   return (
     <>
@@ -229,12 +288,17 @@ export default function DashboardAnalyticsPage() {
                 series={[
                   {
                     name: "Daily Spent",
-                    data: Array.from({ length: 30 }, () =>
-                      Math.floor(1 + Math.random() * 100)
-                    ),
+                    // data: Array.from({ length: 30 }, () =>
+                    //   Math.floor(1 + Math.random() * 100)
+                    // ),
+                    data: monthlyChartData?.charts ? monthlyChartData.charts : []
                   },
                 ]}
               />
+              <Text>
+                <Text strong>{t("totalSpent")}:</Text> {monthlyAnalysis?.total}{" "}
+                {board?.currencyUnit}
+              </Text>
             </Flex>
           </Col>
           <Col
@@ -268,13 +332,18 @@ export default function DashboardAnalyticsPage() {
                 }}
                 series={[
                   {
-                    name: "Daily Spent",
-                    data: Array.from({ length: 12 }, () =>
-                      Math.floor(1 + Math.random() * 100)
-                    ),
+                    name: "Yearly Spent",
+                    // data: Array.from({ length: 12 }, () =>
+                    //   Math.floor(1 + Math.random() * 100)
+                    // ),
+                    data: yearlyChartData?.charts ? yearlyChartData.charts : [],
                   },
                 ]}
               />
+              <Text>
+                <Text strong>{t("totalSpent")}:</Text> {yearlyAnalysis?.total}{" "}
+                {board?.currencyUnit}
+              </Text>
             </Flex>
           </Col>
         </Row>

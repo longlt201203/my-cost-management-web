@@ -1,4 +1,4 @@
-import { Col, Flex, message, Row, Select, Table, Typography } from "antd";
+import { Col, Flex, message, Row, Select, Table, Tag, Typography } from "antd";
 import ControlledDatePicker from "../../../components/ControlledDatePicker";
 import { useEffect, useState } from "react";
 import BoardService, {
@@ -13,7 +13,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Chart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
-import RandomColorTag from "../../../components/RandomColorTag";
+import { CategoryResponse } from "../../../apis/categories.service";
 
 const { Title, Text } = Typography;
 
@@ -167,10 +167,12 @@ export default function DashboardAnalyticsPage() {
                 dataIndex: "categories",
                 key: "categories",
                 title: t("categories"),
-                render: (value: string[]) => (
+                render: (value: CategoryResponse[]) => (
                   <Flex gap="small">
                     {value.map((item) => (
-                      <RandomColorTag>{item}</RandomColorTag>
+                      <Tag key={item.id} color={item.color}>
+                        {item.name}
+                      </Tag>
                     ))}
                   </Flex>
                 ),

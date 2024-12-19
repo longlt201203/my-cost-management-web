@@ -31,6 +31,7 @@ export default class CategoriesService {
 export interface CreateCategoryRequest {
   name: string;
   language: string;
+  color?: string;
 }
 
 export interface UpdateCategoryRequest
@@ -43,6 +44,7 @@ export interface DeleteCategoriesRequest {
 export interface CategoryResponse {
   id: number;
   name: string;
+  color?: string;
 }
 
 export interface GetCategoriesQuery {

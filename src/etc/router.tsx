@@ -9,12 +9,17 @@ import AuthProvider from "../providers/AuthProvider";
 import BoardDetailPage from "../pages/Dashboard/Boards/BoardDetailPage";
 import DashboardAnalyticsPage from "../pages/Dashboard/Analytics";
 import DashboardCategoriesPage from "../pages/Dashboard/Categories";
+import AuthPage from "../pages/AuthPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MyApp />,
     children: [
+      {
+        path: "auth",
+        element: <AuthPage />,
+      },
       {
         path: "login",
         element: <LoginPage />,

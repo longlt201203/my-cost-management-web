@@ -44,5 +44,9 @@
   "deleteCategoriesMessage": "Are you sure you want to delete the selected categories?",
   "language": "Language",
   "color": "Color",
-  "selectColor": "Select Color"
+  "selectColor": "Select Color",
+  "re-analyze": "Re-analyze",
+  "register": "Register",
+  "phone": "Phone number",
+  "confirmPassword": "Confirm password"
 }

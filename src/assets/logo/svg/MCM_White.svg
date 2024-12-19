@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: .7em;
+      }
+
+      .cls-2 {
+        letter-spacing: .68em;
+      }
+
+      .cls-3 {
+        letter-spacing: .68em;
+      }
+
+      .cls-4 {
+        fill: none;
+        stroke-width: 60px;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke: #fff;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-8 {
+        letter-spacing: .7em;
+      }
+
+      .cls-9 {
+        letter-spacing: .69em;
+      }
+
+      .cls-5 {
+        font-size: 619.29px;
+      }
+
+      .cls-5, .cls-6 {
+        font-family: GoogleSans-Bold, 'Google Sans';
+        font-weight: 700;
+      }
+
+      .cls-5, .cls-6, .cls-7 {
+        fill: #fff;
+      }
+
+      .cls-6 {
+        font-size: 72px;
+      }
+
+      .cls-10 {
+        letter-spacing: .68em;
+      }
+    </style>
+  </defs>
+  <polyline class="cls-4" points="135.34 1562.59 635.71 615.61 1069.69 1052.34 1783.09 327.82"/>
+  <polygon class="cls-7" points="1866.55 249.57 1798.3 481.67 1716.62 395.93 1631.42 306.51 1866.55 249.57"/>
+  <polygon class="cls-7" points="1730.49 516.39 1730.49 1562.59 1639.28 1562.59 1639.28 607.59 1730.49 516.39"/>
+  <polygon class="cls-7" points="1183.29 1057.79 1183.29 1562.59 1092.09 1562.59 1092.09 1149 1183.29 1057.79"/>
+  <polygon class="cls-7" points="1441.91 807.25 1441.91 1395.98 1350.7 1395.98 1350.7 898.45 1441.91 807.25"/>
+  <polygon class="cls-7" points="1309.13 938.33 1309.13 1310.19 1217.92 1310.19 1217.92 1029.53 1309.13 938.33"/>
+  <polygon class="cls-7" points="1588.15 658.42 1588.15 1256.75 1496.95 1256.75 1496.95 749.63 1588.15 658.42"/>
+  <text class="cls-5" transform="translate(437.63 1458.37)"><tspan x="0" y="0">C</tspan></text>
+  <rect class="cls-7" x="621.49" y="912.27" width="39.09" height="650.32"/>
+  <rect class="cls-7" x="702.26" y="912.27" width="39.09" height="650.32"/>
+  <text class="cls-6" transform="translate(133.45 1693.98)"><tspan class="cls-1" x="0" y="0">MY</tspan><tspan class="cls-2" x="211.82" y="0"> </tspan><tspan class="cls-10" x="277.63" y="0">C</tspan><tspan class="cls-8" x="380.66" y="0">O</tspan><tspan class="cls-9" x="491.54" y="0">S</tspan><tspan class="cls-8" x="583.63" y="0">T MAN</tspan><tspan class="cls-3" x="1065.09" y="0">A</tspan><tspan class="cls-8" x="1166.04" y="0">GEMENT</tspan></text>
+</svg>

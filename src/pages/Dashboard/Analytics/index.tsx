@@ -1,4 +1,4 @@
-import { Col, Flex, message, Row, Select, Table, Typography } from "antd";
+import { Col, Flex, message, Row, Select, Table, Tag, Typography } from "antd";
 import ControlledDatePicker from "../../../components/ControlledDatePicker";
 import { useEffect, useState } from "react";
 import BoardService, {
@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import Chart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
 import AnalysisService, { AnalysisDTO, MonthlyAnalysisChartResponse, MonthlyAnalysisResponse, YearlyAnalysisChartResponse, YearlyAnalysisResponse } from "../../../apis/analysis.service";
+import { CategoryResponse } from "../../../apis/categories.service";
 
 const { Title, Text } = Typography;
 
@@ -39,8 +40,20 @@ export default function DashboardAnalyticsPage() {
   const [getDailyAnalysisTimeout, setGetDailyAnalysisTimeout] =
     useState<number>();
   const [isDailyAnalysisLoading, setIsDailyAnalysisLoading] = useState(false);
+  const [monthlyAnalysisQuery, setMonthlyAnalysisQuery] = 
+    useState<AnalysisDTO>({
+      boardId: Number(boardId),
+      date: dayjs(),
+      timezone: 'Asia/Ho_Chi_Minh',
+    });
   const [monthlyAnalysis, setMonthlyAnalysis] = useState<MonthlyAnalysisResponse>();
   const [monthlyChartData, setMonthlyChartData] = useState<MonthlyAnalysisChartResponse>();
+  const [yearlyAnalysisQuery, setYearlyAnalysisQuery] = 
+    useState<AnalysisDTO>({
+      boardId: Number(boardId),
+      date: dayjs(),
+      timezone: 'Asia/Ho_Chi_Minh',
+    })
   const [yearlyAnalysis, setYearlyAnalysis] = useState<YearlyAnalysisResponse>();
   const [yearlyChartData, setYearlyChartData] = useState<YearlyAnalysisChartResponse>();
 
@@ -114,56 +127,96 @@ export default function DashboardAnalyticsPage() {
   // Monthly Analysis
   const fetchMonthlyAnalysis = async () => {
     try {
-      const dto: AnalysisDTO = {
+      const monthlyQuery = {
+        ...monthlyAnalysisQuery,
         boardId: Number(boardId),
-        date: dayjs(),
-        timezone: "Asia/Ho_Chi_Minh",
       }
-      const data = await AnalysisService.getMonthlyAnalysis(dto);
+      const data = await AnalysisService.getMonthlyAnalysis(monthlyQuery);
       setMonthlyAnalysis(data);
-      const dataChart = await AnalysisService.getMonthAnalysisChart(dto);
-      setMonthlyChartData(dataChart);
     } catch (err) {
       handleError(err, showBoundary, messageApi);
     }
   };
 
+  const fetchMonthlyDataChart = async () => {
+    try {
+      const monthlyQuery = {
+        ...monthlyAnalysisQuery,
+        boardId: Number(boardId),
+      }
+      const dataChart = await AnalysisService.getMonthAnalysisChart(monthlyQuery);
+      setMonthlyChartData(dataChart);
+    } catch (err) {
+      handleError(err, showBoundary, messageApi);
+    }
+  }
+
   useEffect(() => {
     fetchMonthlyAnalysis();
+    fetchMonthlyDataChart();
   }, []);
 
   useEffect(() => {
     if (boardId) {
       fetchMonthlyAnalysis();
+      fetchMonthlyDataChart();
     }
-  }, [boardId]);
+  }, [boardId, monthlyAnalysisQuery]);
+
+  const updateMonthlyAnalysisQuery = (data: Partial<AnalysisDTO>) => {
+    const newQuery = {
+      ...monthlyAnalysisQuery,
+      ...data,
+    };
+    setMonthlyAnalysisQuery(newQuery);
+  };
 
   //Yearly Analysis
   const fetchYearlyAnalysis = async () => {
     try {
-      const dto: AnalysisDTO = {
+      const yearlyQuery = {
+        ...yearlyAnalysisQuery,
         boardId: Number(boardId),
-        date: dayjs(),
-        timezone: "Asia/Ho_Chi_Minh"
-      };
-      const data = await AnalysisService.getYearlyAnalysis(dto);
+      }
+      const data = await AnalysisService.getYearlyAnalysis(yearlyQuery);
       setYearlyAnalysis(data);
-      const dataChart = await AnalysisService.getYearlyAnalysisChart(dto);
-      setYearlyChartData(dataChart);
     } catch (err) {
       handleError(err, showBoundary, messageApi);
     }
   };
 
+  const fetchYearlyDataChart = async () => {
+    try { 
+      const yearlyQuery = {
+        ...yearlyAnalysisQuery,
+        boardId: Number(boardId),
+      }
+      const dataChart = await AnalysisService.getYearlyAnalysisChart(yearlyQuery);
+      setYearlyChartData(dataChart);
+    } catch (err) {
+      handleError(err, showBoundary, messageApi);
+    }
+  }
+
   useEffect(() => {
     fetchYearlyAnalysis();
+    fetchYearlyDataChart();
   }, []);
 
   useEffect(() => {
     if (boardId) {
       fetchYearlyAnalysis();
+      fetchYearlyDataChart();
     }
-  }, [boardId]);
+  }, [boardId, yearlyAnalysisQuery]);
+
+  const updateYearlyAnalysisQuery = (data: Partial<AnalysisDTO>) => {
+    const newQuery = {
+      ...yearlyAnalysisQuery,
+      ...data,
+    };
+    setYearlyAnalysisQuery(newQuery);
+  }
 
   return (
     <>
@@ -222,6 +275,20 @@ export default function DashboardAnalyticsPage() {
                 render: (value) => `${value} ${board?.currencyUnit}`,
               },
               {
+                dataIndex: "categories",
+                key: "categories",
+                title: t("categories"),
+                render: (value: CategoryResponse[]) => (
+                  <Flex gap="small">
+                    {value.map((item) => (
+                      <Tag key={item.id} color={item.color}>
+                        {item.name}
+                      </Tag>
+                    ))}
+                  </Flex>
+                ),
+              },
+              {
                 dataIndex: "paymentMethod",
                 key: "paymentMethod",
                 title: t("paymentMethod"),
@@ -265,7 +332,14 @@ export default function DashboardAnalyticsPage() {
             <Flex vertical gap="small">
               <Title level={4}>{t("monthly")}</Title>
               <Flex>
-                <ControlledDatePicker picker="month" />
+                <ControlledDatePicker 
+                  value={dayjs(monthlyAnalysisQuery.date)}
+                  picker="month" 
+                  onChange={(v) => {
+                    updateMonthlyAnalysisQuery({ date: v })
+                  }}
+                  format="YYYY-MM"
+                />
               </Flex>
               <Chart
                 type="bar"
@@ -310,7 +384,14 @@ export default function DashboardAnalyticsPage() {
             <Flex vertical gap="small">
               <Title level={4}>{t("yearly")}</Title>
               <Flex>
-                <ControlledDatePicker picker="year" />
+                <ControlledDatePicker 
+                  value={dayjs(yearlyAnalysisQuery.date)}
+                  picker="year" 
+                  onChange={(v) => {
+                    updateYearlyAnalysisQuery({ date: v })
+                  }}
+                  format="YYYY"
+                />
               </Flex>
               <Chart
                 type="bar"

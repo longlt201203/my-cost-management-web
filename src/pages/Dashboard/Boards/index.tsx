@@ -14,11 +14,12 @@ import DeleteBoardModal from "./DeleteBoardModal";
 import CurrencyUnit, { getCurrencyUnit } from "../../../etc/currency-unit";
 import placeholder_600x400 from "../../../assets/placeholder_600x400.svg";
 import { useTranslation } from "react-i18next";
+import { Languages } from "../../../etc/i18n";
 
 const { Title, Text } = Typography;
 
 export default function DashboardBoardsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const emptyBoard: BoardResponse = {
     id: 0,
@@ -26,6 +27,7 @@ export default function DashboardBoardsPage() {
     currencyUnit: CurrencyUnit.kVND.code,
     createdAt: "",
     updatedAt: "",
+    language: i18n.language,
   };
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -58,12 +60,12 @@ export default function DashboardBoardsPage() {
       if (board.id) {
         await BoardService.update(board.id, {
           title: board.title,
-          currencyUnit: board.currencyUnit,
         });
       } else {
         await BoardService.create({
           title: board.title,
           currencyUnit: board.currencyUnit,
+          language: board.language,
         });
       }
       setIsModalOpen(false);
@@ -161,12 +163,16 @@ export default function DashboardBoardsPage() {
                 <Card.Meta
                   title={item.title}
                   description={
-                    <>
+                    <Flex vertical>
                       <Text type="secondary">
                         {t("currencyUnit")}:{" "}
                         {getCurrencyUnit(item.currencyUnit)?.label}
                       </Text>
-                    </>
+                      <Text type="secondary">
+                        {t("language")}:{" "}
+                        {Languages[item.language as keyof typeof Languages]}
+                      </Text>
+                    </Flex>
                   }
                 />
               </Card>

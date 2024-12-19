@@ -41,5 +41,8 @@
   "addCategory": "Add Category",
   "updateCategory": "Update Category",
   "enterCategoryName": "Enter category name",
-  "deleteCategoriesMessage": "Are you sure you want to delete the selected categories?"
+  "deleteCategoriesMessage": "Are you sure you want to delete the selected categories?",
+  "language": "Language",
+  "color": "Color",
+  "selectColor": "Select Color"
 }

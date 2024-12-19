@@ -1,8 +1,10 @@
 import AxiosService from "./axios.service";
 
 export default class CategoriesService {
-  static async listCategories() {
-    const url = "/api/category";
+  static async listCategories(query: GetCategoriesQuery) {
+    const searchParams = new URLSearchParams();
+    searchParams.set("language", query.language);
+    const url = `/api/category?${searchParams.toString()}`;
     const response = await AxiosService.get<CategoryResponse[]>(url);
     return response.data;
   }
@@ -28,9 +30,12 @@ export default class CategoriesService {
 
 export interface CreateCategoryRequest {
   name: string;
+  language: string;
+  color?: string;
 }
 
-export interface UpdateCategoryRequest extends CreateCategoryRequest {}
+export interface UpdateCategoryRequest
+  extends Omit<CreateCategoryRequest, "language"> {}
 
 export interface DeleteCategoriesRequest {
   ids: number[];
@@ -39,4 +44,9 @@ export interface DeleteCategoriesRequest {
 export interface CategoryResponse {
   id: number;
   name: string;
+  color?: string;
+}
+
+export interface GetCategoriesQuery {
+  language: string;
 }

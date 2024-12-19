@@ -1,4 +1,4 @@
-import { Button, Flex, message, Table, Typography } from "antd";
+import { Button, Flex, message, Table, Tag, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import CategoriesService, {
   CategoryResponse,
@@ -18,11 +18,12 @@ export interface CategoryTableItemType extends CategoryResponse {
 }
 
 export default function DashboardCategoriesPage() {
+  const { t, i18n } = useTranslation();
   const emptyCategory: CategoryResponse = {
     id: 0,
     name: "",
+    color: "",
   };
-  const { t } = useTranslation();
   const [messageApi, contextHolder] = message.useMessage();
   const { showBoundary } = useErrorBoundary();
   const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
@@ -39,7 +40,9 @@ export default function DashboardCategoriesPage() {
     setDeleteIds([]);
     setIsCategoriesLoading(true);
     try {
-      const categories = await CategoriesService.listCategories();
+      const categories = await CategoriesService.listCategories({
+        language: i18n.language,
+      });
       setCategories(categories);
     } catch (err) {
       handleError(err, showBoundary, messageApi);
@@ -53,10 +56,13 @@ export default function DashboardCategoriesPage() {
       if (category.id) {
         await CategoriesService.update(category.id, {
           name: category.name,
+          color: category.color,
         });
       } else {
         await CategoriesService.create({
           name: category.name,
+          language: i18n.language,
+          color: category.color,
         });
       }
       messageApi.success({
@@ -89,7 +95,7 @@ export default function DashboardCategoriesPage() {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [i18n.language]);
 
   return (
     <>
@@ -143,6 +149,9 @@ export default function DashboardCategoriesPage() {
               key: "name",
               dataIndex: "name",
               title: t("name"),
+              render: (value, record) => (
+                <Tag color={record.color}>{value}</Tag>
+              ),
             },
             {
               key: "actions",

@@ -48,5 +48,11 @@
   "re-analyze": "Re-analyze",
   "register": "Register",
   "phone": "Phone number",
-  "confirmPassword": "Confirm password"
+  "confirmPassword": "Confirm password",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Email is invalid",
+  "phoneRequired": "Phone number is required",
+  "phoneInvalid": "Phone number is invalid",
+  "passwordNotMatch": "Password does not match",
+  "passwordRequired": "Password is required"
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2000 2000">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: .7em;
+      }
+
+      .cls-2 {
+        letter-spacing: .68em;
+      }
+
+      .cls-3 {
+        letter-spacing: .68em;
+      }
+
+      .cls-4 {
+        font-size: 72px;
+      }
+
+      .cls-4, .cls-5, .cls-6 {
+        fill: #0e3050;
+      }
+
+      .cls-4, .cls-6 {
+        font-family: GoogleSans-Bold, 'Google Sans';
+        font-weight: 700;
+      }
+
+      .cls-7 {
+        fill: #0b7f59;
+      }
+
+      .cls-7, .cls-5, .cls-8 {
+        stroke-width: 0px;
+      }
+
+      .cls-9 {
+        fill: none;
+        stroke: url(#linear-gradient);
+        stroke-miterlimit: 10;
+        stroke-width: 60px;
+      }
+
+      .cls-10 {
+        letter-spacing: .7em;
+      }
+
+      .cls-11 {
+        letter-spacing: .69em;
+      }
+
+      .cls-8 {
+        fill: #27aae1;
+      }
+
+      .cls-6 {
+        font-size: 619.29px;
+      }
+
+      .cls-12 {
+        letter-spacing: .68em;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="113.6" y1="948.83" x2="1809.25" y2="948.83" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8dc63f"/>
+      <stop offset=".5" stop-color="#00a651"/>
+      <stop offset="1" stop-color="#00aeef"/>
+    </linearGradient>
+  </defs>
+  <polyline class="cls-9" points="140.12 1569.73 640.5 622.74 1074.48 1059.48 1787.88 334.96"/>
+  <polygon class="cls-8" points="1871.34 256.7 1803.09 488.81 1721.41 403.07 1636.21 313.64 1871.34 256.7"/>
+  <polygon class="cls-7" points="1735.28 523.52 1735.28 1569.73 1644.07 1569.73 1644.07 614.73 1735.28 523.52"/>
+  <polygon class="cls-7" points="1188.08 1064.93 1188.08 1569.73 1096.88 1569.73 1096.88 1156.13 1188.08 1064.93"/>
+  <polygon class="cls-7" points="1446.7 814.38 1446.7 1403.11 1355.49 1403.11 1355.49 905.59 1446.7 814.38"/>
+  <polygon class="cls-7" points="1313.91 945.46 1313.91 1317.33 1222.71 1317.33 1222.71 1036.67 1313.91 945.46"/>
+  <polygon class="cls-7" points="1592.94 665.56 1592.94 1263.89 1501.74 1263.89 1501.74 756.76 1592.94 665.56"/>
+  <text class="cls-6" transform="translate(442.42 1465.51)"><tspan x="0" y="0">C</tspan></text>
+  <rect class="cls-5" x="626.28" y="919.41" width="39.09" height="650.32"/>
+  <rect class="cls-5" x="707.05" y="919.41" width="39.09" height="650.32"/>
+  <text class="cls-4" transform="translate(138.24 1701.11)"><tspan class="cls-1" x="0" y="0">MY</tspan><tspan class="cls-2" x="211.82" y="0"> </tspan><tspan class="cls-12" x="277.63" y="0">C</tspan><tspan class="cls-10" x="380.66" y="0">O</tspan><tspan class="cls-11" x="491.54" y="0">S</tspan><tspan class="cls-10" x="583.63" y="0">T MAN</tspan><tspan class="cls-3" x="1065.09" y="0">A</tspan><tspan class="cls-10" x="1166.04" y="0">GEMENT</tspan></text>
+</svg>

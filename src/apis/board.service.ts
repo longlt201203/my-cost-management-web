@@ -70,6 +70,7 @@ export interface ExtractedRecordResponse {
   paymentMethod: string;
   location: string;
   notes: string;
+  categories: string[];
 }
 
 export interface GetDailyAnalysisQuery {

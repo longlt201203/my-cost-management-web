@@ -1,4 +1,4 @@
-import { Form, Input, Modal } from "antd";
+import { ColorPicker, Form, Input, Modal } from "antd";
 import { CategoryResponse } from "../../../apis/categories.service";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
@@ -42,12 +42,21 @@ export default function CategoryModal({
         form={form}
         onFinish={onSubmit}
         disabled={loading}
+        layout="vertical"
       >
         <Form.Item<CategoryResponse> hidden name="id">
           <Input />
         </Form.Item>
-        <Form.Item<CategoryResponse> name="name">
+        <Form.Item<CategoryResponse> name="name" label={t("name")}>
           <Input placeholder={t("enterCategoryName")} />
+        </Form.Item>
+        <Form.Item<CategoryResponse> name="color" label={t("color")}>
+          <ColorPicker
+            showText
+            onChange={(v) => {
+              form.setFieldsValue({ color: v.toHexString() });
+            }}
+          />
         </Form.Item>
       </Form>
     </Modal>

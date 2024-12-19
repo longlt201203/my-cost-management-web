@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import AxiosService from "./axios.service";
+import { CategoryResponse } from "./categories.service";
 
 export default class BoardService {
   static async listBoards() {
@@ -70,7 +71,7 @@ export interface ExtractedRecordResponse {
   paymentMethod: string;
   location: string;
   notes: string;
-  categories: string[];
+  categories: CategoryResponse[];
 }
 
 export interface GetDailyAnalysisQuery {

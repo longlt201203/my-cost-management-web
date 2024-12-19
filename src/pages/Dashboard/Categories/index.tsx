@@ -1,4 +1,4 @@
-import { Button, Flex, message, Table, Typography } from "antd";
+import { Button, Flex, message, Table, Tag, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import CategoriesService, {
   CategoryResponse,
@@ -22,6 +22,7 @@ export default function DashboardCategoriesPage() {
   const emptyCategory: CategoryResponse = {
     id: 0,
     name: "",
+    color: "",
   };
   const [messageApi, contextHolder] = message.useMessage();
   const { showBoundary } = useErrorBoundary();
@@ -55,11 +56,13 @@ export default function DashboardCategoriesPage() {
       if (category.id) {
         await CategoriesService.update(category.id, {
           name: category.name,
+          color: category.color,
         });
       } else {
         await CategoriesService.create({
           name: category.name,
           language: i18n.language,
+          color: category.color,
         });
       }
       messageApi.success({
@@ -146,6 +149,9 @@ export default function DashboardCategoriesPage() {
               key: "name",
               dataIndex: "name",
               title: t("name"),
+              render: (value, record) => (
+                <Tag color={record.color}>{value}</Tag>
+              ),
             },
             {
               key: "actions",

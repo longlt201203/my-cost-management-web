@@ -50,14 +50,17 @@ export interface BoardResponse {
   createdAt: string;
   updatedAt: string;
   currencyUnit: string;
+  language: string;
 }
 
 export interface CreateBoardRequest {
   title: string;
   currencyUnit: string;
+  language: string;
 }
 
-export interface UpdateBoardRequest extends CreateBoardRequest {}
+export interface UpdateBoardRequest
+  extends Omit<CreateBoardRequest, "currencyUnit" | "language"> {}
 
 export interface ExtractedRecordResponse {
   id: number;
@@ -67,6 +70,7 @@ export interface ExtractedRecordResponse {
   paymentMethod: string;
   location: string;
   notes: string;
+  categories: string[];
 }
 
 export interface GetDailyAnalysisQuery {

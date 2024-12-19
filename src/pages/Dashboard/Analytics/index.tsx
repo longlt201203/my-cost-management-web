@@ -13,6 +13,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Chart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
+import RandomColorTag from "../../../components/RandomColorTag";
 
 const { Title, Text } = Typography;
 
@@ -161,6 +162,18 @@ export default function DashboardAnalyticsPage() {
                 key: "amount",
                 title: t("amount"),
                 render: (value) => `${value} ${board?.currencyUnit}`,
+              },
+              {
+                dataIndex: "categories",
+                key: "categories",
+                title: t("categories"),
+                render: (value: string[]) => (
+                  <Flex gap="small">
+                    {value.map((item) => (
+                      <RandomColorTag>{item}</RandomColorTag>
+                    ))}
+                  </Flex>
+                ),
               },
               {
                 dataIndex: "paymentMethod",

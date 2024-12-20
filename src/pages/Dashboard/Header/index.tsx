@@ -1,12 +1,13 @@
 import { Button, Flex, Layout, theme } from "antd";
 import Language from "./Language";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useTranslation } from "react-i18next";
 
 export default function Header() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
+  const { t } = useTranslation();
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -25,7 +26,7 @@ export default function Header() {
           type="text"
           onClick={handleLogout}
         >
-          Logout
+          {t("logout")}
         </Button>
         <Language />
       </Flex>

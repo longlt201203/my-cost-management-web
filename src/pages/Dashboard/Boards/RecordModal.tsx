@@ -58,7 +58,10 @@ export default function RecordModal({
         <Form.Item<RecordResponse> hidden name="id">
           <Input />
         </Form.Item>
-        <Form.Item<RecordResponse> name="content">
+        <Form.Item<RecordResponse>
+          name="content"
+          rules={[{ required: true, message: t("contentRequired") }]}
+        >
           <Input placeholder={t("enterContent")} />
         </Form.Item>
       </Form>

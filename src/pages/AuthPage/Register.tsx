@@ -7,6 +7,8 @@ import handleError from "../../etc/handle-error";
 import { useErrorBoundary } from "react-error-boundary";
 import AccountService from "../../apis/account.service";
 import AuthService from "../../apis/auth.service";
+import { useDebounce } from "../../etc/debouce";
+import { RuleObject } from "antd/es/form";
 
 interface RegisterFormType {
   email: string;
@@ -43,9 +45,39 @@ export default function Register() {
       localStorage.setItem("refreshToken", data.refreshToken);
       window.location.href = "/";
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
+
+  const checkEmailExists = useDebounce(
+    async (_: RuleObject, v: string, cb: (err?: string) => void) => {
+      try {
+        const data = await AccountService.checkExists({
+          field: "email",
+          value: v,
+        });
+        cb(data ? t("emailExists") : undefined);
+      } catch (err) {
+        handleError(err, showBoundary, messageApi, t);
+      }
+    },
+    500
+  );
+
+  const checkPhoneExists = useDebounce(
+    async (_: RuleObject, v: string, cb: (err?: string) => void) => {
+      try {
+        const data = await AccountService.checkExists({
+          field: "phone",
+          value: v,
+        });
+        cb(data ? t("phoneExists") : undefined);
+      } catch (err) {
+        handleError(err, showBoundary, messageApi, t);
+      }
+    },
+    500
+  );
 
   return (
     <>
@@ -70,6 +102,9 @@ export default function Register() {
               type: "email",
               message: t("emailInvalid"),
             },
+            {
+              validator: checkEmailExists,
+            },
           ]}
         >
           <Input
@@ -88,6 +123,9 @@ export default function Register() {
             {
               pattern: /^[0-9\b]+$/,
               message: t("phoneInvalid"),
+            },
+            {
+              validator: checkPhoneExists,
             },
           ]}
         >

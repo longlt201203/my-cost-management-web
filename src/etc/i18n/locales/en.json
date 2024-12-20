@@ -54,5 +54,13 @@
   "phoneRequired": "Phone number is required",
   "phoneInvalid": "Phone number is invalid",
   "passwordNotMatch": "Password does not match",
-  "passwordRequired": "Password is required"
+  "passwordRequired": "Password is required",
+  "wrong_username_or_password_err": "Wrong username or password",
+  "validation_err": "Please check your information",
+  "no_analysis_found_err": "No analysis found",
+  "titleRequired": "Please enter title",
+  "contentRequired": "Please enter content",
+  "logout": "Logout",
+  "emailExists": "Email already exists",
+  "phoneExists": "Phone number already exists"
 }

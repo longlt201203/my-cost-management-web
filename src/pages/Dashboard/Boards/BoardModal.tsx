@@ -60,7 +60,16 @@ export default function BoardModal({
         <Form.Item<BoardResponse> hidden name="id">
           <Input />
         </Form.Item>
-        <Form.Item<BoardResponse> label={t("title")} name="title">
+        <Form.Item<BoardResponse>
+          label={t("title")}
+          name="title"
+          rules={[
+            {
+              required: true,
+              message: t("titleRequired"),
+            },
+          ]}
+        >
           <Input placeholder={t("enterTitle")} />
         </Form.Item>
         {!board.id && (

@@ -35,7 +35,7 @@ export default function Login() {
       localStorage.setItem("refreshToken", data.refreshToken);
       window.location.href = "/";
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
 

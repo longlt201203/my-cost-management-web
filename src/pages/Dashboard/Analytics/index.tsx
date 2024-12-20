@@ -25,6 +25,7 @@ import Chart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
 import { CategoryResponse } from "../../../apis/categories.service";
 import AnalysisService from "../../../apis/analysis.service";
+import { useDebounce } from "../../../etc/debouce";
 
 const { Title, Text } = Typography;
 
@@ -47,8 +48,6 @@ export default function DashboardAnalyticsPage() {
     useState<GetDailyAnalysisQuery>({
       date: dayjs(searchParams.get("date") || undefined).toDate(),
     });
-  const [getDailyAnalysisTimeout, setGetDailyAnalysisTimeout] =
-    useState<number>();
   const [isDailyAnalysisLoading, setIsDailyAnalysisLoading] = useState(false);
   const [reAnalyzing, setReAnalyzing] = useState(false);
 
@@ -57,7 +56,7 @@ export default function DashboardAnalyticsPage() {
       const boards = await BoardService.listBoards();
       setBoards(boards);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
 
@@ -66,7 +65,7 @@ export default function DashboardAnalyticsPage() {
       const board = await BoardService.getBoard(Number(boardId));
       setBoard(board);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
 
@@ -79,10 +78,18 @@ export default function DashboardAnalyticsPage() {
       );
       setDailyAnalytics(dailyAnalytics);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsDailyAnalysisLoading(false);
   };
+
+  const changeSearchParamsAndRefetch = useDebounce(() => {
+    const searchParams = new URLSearchParams();
+    if (getDailyAnalysisQuery.date)
+      searchParams.set("date", getDailyAnalysisQuery.date.toISOString());
+    setSearchParams(searchParams);
+    fetchDailyAnalytics();
+  }, 500);
 
   useEffect(() => {
     fetchBoards();
@@ -98,16 +105,7 @@ export default function DashboardAnalyticsPage() {
     if (boardId) {
       setIsDailyAnalysisLoading(true);
       setDailyAnalytics(undefined);
-      if (getDailyAnalysisTimeout) clearTimeout(getDailyAnalysisTimeout);
-      setGetDailyAnalysisTimeout(
-        setTimeout(() => {
-          const searchParams = new URLSearchParams();
-          if (getDailyAnalysisQuery.date)
-            searchParams.set("date", getDailyAnalysisQuery.date.toISOString());
-          setSearchParams(searchParams);
-          fetchDailyAnalytics();
-        }, 500)
-      );
+      changeSearchParamsAndRefetch();
     }
   }, [boardId, getDailyAnalysisQuery]);
 
@@ -128,7 +126,7 @@ export default function DashboardAnalyticsPage() {
       });
       fetchDailyAnalytics();
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setReAnalyzing(false);
   };

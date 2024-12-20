@@ -54,5 +54,13 @@
   "phoneRequired": "Phải nhập số điện thoại",
   "phoneInvalid": "Số điện thoại không hợp lệ",
   "passwordNotMatch": "Mật khẩu không trùng khớp",
-  "passwordRequired": "Phải nhập mật khẩu"
+  "passwordRequired": "Phải nhập mật khẩu",
+  "wrong_username_or_password_err": "Tên đăng nhập hoặc mật khẩu không đúng",
+  "validation_err": "Vui lòng kiểm tra lại thông tin",
+  "no_analysis_found_err": "Không tìm thấy phân tích",
+  "titleRequired": "Vui lòng nhập tên",
+  "contentRequired": "Vui lòng nhập nội dung",
+  "logout": "Đăng xuất",
+  "emailExists": "Email đã tồn tại",
+  "phoneExists": "Số điện thoại đã tồn tại"
 }

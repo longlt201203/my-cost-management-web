@@ -9,9 +9,8 @@ export default function Header() {
   } = theme.useToken();
   const { t } = useTranslation();
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    window.location.href = "/auth";
+    const callback = encodeURIComponent(`${window.location.origin}/auth`);
+    window.location.href = `/api/auth/2/logout?callback=${callback}`;
   };
 
   return (

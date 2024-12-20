@@ -6,7 +6,6 @@ import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
 import handleError from "../../etc/handle-error";
 import { useErrorBoundary } from "react-error-boundary";
 import AccountService from "../../apis/account.service";
-import AuthService from "../../apis/auth.service";
 import { useDebounce } from "../../etc/debouce";
 import { RuleObject } from "antd/es/form";
 
@@ -37,13 +36,11 @@ export default function Register() {
         phone: values.phone,
         password: values.password,
       });
-      const data = await AuthService.loginBasic({
-        email: values.email,
-        password: values.password,
-      });
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-      window.location.href = "/";
+      const code = btoa(`${values.email}:${values.password}`);
+      const searchParams = new URLSearchParams();
+      searchParams.set("code", code);
+      searchParams.set("callback", `${window.location.origin}/`);
+      window.location.href = `/api/auth/2/basic?${searchParams.toString()}`;
     } catch (err) {
       handleError(err, showBoundary, messageApi, t);
     }

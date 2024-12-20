@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import MyApp from "../App";
-import LoginPage from "../pages/LoginPage";
 import DashboardLayout from "../pages/Dashboard";
 import DashboardHomePage from "../pages/Dashboard/Home";
 import DashboardBoardsPage from "../pages/Dashboard/Boards";
@@ -19,10 +18,6 @@ const router = createBrowserRouter([
       {
         path: "auth",
         element: <AuthPage />,
-      },
-      {
-        path: "login",
-        element: <LoginPage />,
       },
       {
         path: "",

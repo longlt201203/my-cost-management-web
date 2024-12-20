@@ -3,6 +3,10 @@ import { useTranslation } from "react-i18next";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
+import handleError from "../../etc/handle-error";
+import { useErrorBoundary } from "react-error-boundary";
+import AccountService from "../../apis/account.service";
+import AuthService from "../../apis/auth.service";
 
 interface RegisterFormType {
   email: string;
@@ -20,8 +24,28 @@ const initValues: RegisterFormType = {
 
 export default function Register() {
   const { t } = useTranslation();
-  const [_, contextHolder] = message.useMessage();
+  const { showBoundary } = useErrorBoundary();
+  const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm<RegisterFormType>();
+
+  const handleRegister = async (values: RegisterFormType) => {
+    try {
+      await AccountService.createAccount({
+        email: values.email,
+        phone: values.phone,
+        password: values.password,
+      });
+      const data = await AuthService.loginBasic({
+        email: values.email,
+        password: values.password,
+      });
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      window.location.href = "/";
+    } catch (err) {
+      handleError(err, showBoundary, messageApi);
+    }
+  };
 
   return (
     <>
@@ -32,6 +56,7 @@ export default function Register() {
         layout="vertical"
         initialValues={initValues}
         form={form}
+        onFinish={handleRegister}
       >
         <Form.Item<RegisterFormType>
           name="email"

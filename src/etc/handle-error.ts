@@ -14,7 +14,7 @@ export default function handleError(
       });
       return;
     } else if (err.response.status == HttpStatusCode.Unauthorized) {
-      window.location.href = "/login";
+      window.location.href = "/auth";
       return;
     }
   }

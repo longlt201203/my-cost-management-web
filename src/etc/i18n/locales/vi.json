@@ -44,5 +44,15 @@
   "deleteCategoriesMessage": "Bạn có chắc muốn xóa các phân loại đã chọn?",
   "language": "Ngôn ngữ",
   "color": "Màu sắc",
-  "selectColor": "Chọn màu"
+  "selectColor": "Chọn màu",
+  "re-analyze": "Phân tích lại",
+  "register": "Đăng ký",
+  "phone": "Số điện thoại",
+  "confirmPassword": "Xác nhận mật khẩu",
+  "emailRequired": "Phải nhập email",
+  "emailInvalid": "Email không hợp lệ",
+  "phoneRequired": "Phải nhập số điện thoại",
+  "phoneInvalid": "Số điện thoại không hợp lệ",
+  "passwordNotMatch": "Mật khẩu không trùng khớp",
+  "passwordRequired": "Phải nhập mật khẩu"
 }

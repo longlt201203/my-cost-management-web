@@ -1,4 +1,14 @@
-import { Col, Flex, message, Row, Select, Table, Tag, Typography } from "antd";
+import {
+  Button,
+  Col,
+  Flex,
+  message,
+  Row,
+  Select,
+  Table,
+  Tag,
+  Typography,
+} from "antd";
 import ControlledDatePicker from "../../../components/ControlledDatePicker";
 import { useEffect, useState } from "react";
 import BoardService, {
@@ -14,6 +24,7 @@ import dayjs from "dayjs";
 import Chart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
 import { CategoryResponse } from "../../../apis/categories.service";
+import AnalysisService from "../../../apis/analysis.service";
 
 const { Title, Text } = Typography;
 
@@ -39,6 +50,7 @@ export default function DashboardAnalyticsPage() {
   const [getDailyAnalysisTimeout, setGetDailyAnalysisTimeout] =
     useState<number>();
   const [isDailyAnalysisLoading, setIsDailyAnalysisLoading] = useState(false);
+  const [reAnalyzing, setReAnalyzing] = useState(false);
 
   const fetchBoards = async () => {
     try {
@@ -107,6 +119,20 @@ export default function DashboardAnalyticsPage() {
     setGetDailyAnalysisQuery(newQuery);
   };
 
+  const reAnalyze = async () => {
+    setReAnalyzing(true);
+    try {
+      await AnalysisService.analyzeDaily({
+        boardId: Number(boardId),
+        date: getDailyAnalysisQuery.date,
+      });
+      fetchDailyAnalytics();
+    } catch (err) {
+      handleError(err, showBoundary, messageApi);
+    }
+    setReAnalyzing(false);
+  };
+
   return (
     <>
       {contextHolder}
@@ -129,7 +155,7 @@ export default function DashboardAnalyticsPage() {
         </Flex>
         <Flex vertical gap="small">
           <Title level={4}>{t("daily")}</Title>
-          <Flex>
+          <Flex gap="small">
             <ControlledDatePicker
               value={dayjs(getDailyAnalysisQuery.date)}
               onChange={(v) =>
@@ -138,6 +164,13 @@ export default function DashboardAnalyticsPage() {
               format="DD/MM/YYYY"
               maxDate={dayjs()}
             />
+            <Button
+              type="primary"
+              loading={isDailyAnalysisLoading || reAnalyzing}
+              onClick={reAnalyze}
+            >
+              {t("re-analyze")}
+            </Button>
           </Flex>
           <Table<DailyAnalysisTableItemType>
             pagination={false}

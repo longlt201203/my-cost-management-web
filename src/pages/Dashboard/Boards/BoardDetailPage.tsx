@@ -14,6 +14,7 @@ import { ArrowBack, DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import DeleteRecordModal from "./DeleteRecordModal";
 import ControlledDatePicker from "../../../components/ControlledDatePicker";
 import { useTranslation } from "react-i18next";
+import { useDebounce } from "../../../etc/debouce";
 
 const { Title } = Typography;
 
@@ -34,7 +35,6 @@ export default function BoardDetailPage() {
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [currentTimeout, setCurrentTimeout] = useState<number>();
   const { boardId } = useParams();
   const [board, setBoard] = useState<BoardResponse>();
   const [boardRecords, setBoardRecords] = useState<RecordResponse[]>([]);
@@ -57,7 +57,7 @@ export default function BoardDetailPage() {
       const board = await BoardService.getBoard(Number(boardId));
       setBoard(board);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
 
@@ -70,7 +70,7 @@ export default function BoardDetailPage() {
       );
       setBoardRecords(records);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsRecordTableLoading(false);
   };
@@ -83,6 +83,14 @@ export default function BoardDetailPage() {
     setListRecordsQuery(newQuery);
   };
 
+  const changeSearchParamsAndRefetch = useDebounce(() => {
+    const searchParams = new URLSearchParams();
+    if (listRecordsQuery.date)
+      searchParams.set("date", listRecordsQuery.date.toISOString());
+    setSearchParams(searchParams);
+    fetchRecords();
+  }, 500);
+
   useEffect(() => {
     fetchBoard();
   }, []);
@@ -90,16 +98,7 @@ export default function BoardDetailPage() {
   useEffect(() => {
     setBoardRecords([]);
     setIsRecordTableLoading(true);
-    if (currentTimeout) clearTimeout(currentTimeout);
-    setCurrentTimeout(
-      setTimeout(() => {
-        const searchParams = new URLSearchParams();
-        if (listRecordsQuery.date)
-          searchParams.set("date", listRecordsQuery.date.toISOString());
-        setSearchParams(searchParams);
-        fetchRecords();
-      }, 500)
-    );
+    changeSearchParamsAndRefetch();
   }, [listRecordsQuery]);
 
   const handleModalFormSubmit = async (record: RecordResponse) => {
@@ -120,7 +119,7 @@ export default function BoardDetailPage() {
       });
       fetchRecords();
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsRecordModalLoading(false);
   };
@@ -135,7 +134,7 @@ export default function BoardDetailPage() {
       });
       fetchRecords();
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsDeleteRecordModalLoading(false);
   };

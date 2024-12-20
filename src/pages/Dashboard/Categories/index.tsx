@@ -45,7 +45,7 @@ export default function DashboardCategoriesPage() {
       });
       setCategories(categories);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsCategoriesLoading(false);
   };
@@ -71,7 +71,7 @@ export default function DashboardCategoriesPage() {
       setCategoryModalOpen(false);
       fetchCategories();
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setCategoryModalLoading(false);
   };
@@ -88,7 +88,7 @@ export default function DashboardCategoriesPage() {
         content: "Success!",
       });
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setDeleteCategoryModalLoading(false);
   };

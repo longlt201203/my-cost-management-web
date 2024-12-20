@@ -46,7 +46,7 @@ export default function DashboardBoardsPage() {
       const boards = await BoardService.listBoards();
       setBoards(boards);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
 
@@ -74,7 +74,7 @@ export default function DashboardBoardsPage() {
       });
       fetchBoards();
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsModalLoading(false);
   };
@@ -89,7 +89,7 @@ export default function DashboardBoardsPage() {
       });
       fetchBoards();
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsDeleteModalLoading(false);
   };

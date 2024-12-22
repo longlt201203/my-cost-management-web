@@ -10,8 +10,8 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import GridViewIcon from "@mui/icons-material/GridView";
 import CategoryIcon from "@mui/icons-material/Category";
-import SettingsIcon from "@mui/icons-material/Settings";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { MenuItemType } from "antd/es/menu/interface";
@@ -38,37 +38,38 @@ export default function DashboardLayout() {
       key: "",
       label: t("home"),
       icon: <HomeIcon />,
-      onClick: () => navigate("/"),
     },
     {
       key: "boards",
       label: t("boards"),
       icon: <GridViewIcon />,
-      onClick: () => navigate("/boards"),
     },
     {
       key: "analytics",
       label: t("analytics"),
       icon: <AnalyticsIcon />,
-      onClick: () => navigate("/analytics"),
     },
     {
       key: "categories",
       label: t("categories"),
       icon: <CategoryIcon />,
-      onClick: () => navigate("/categories"),
     },
     {
-      key: "settings",
-      label: "Settings",
-      icon: <SettingsIcon />,
+      key: "account",
+      label: t("account"),
+      icon: <AccountCircleOutlinedIcon />,
     },
   ];
 
   return (
     <Layout className="min-h-screen">
       <Layout.Sider collapsible className="max-md:hidden">
-        <Menu items={menuItems} theme="dark" selectedKeys={keys.slice(1)} />
+        <Menu
+          items={menuItems}
+          theme="dark"
+          selectedKeys={keys.slice(1)}
+          onSelect={(e) => navigate(e.key)}
+        />
       </Layout.Sider>
       <Layout>
         <Header />
@@ -112,7 +113,10 @@ export default function DashboardLayout() {
         <Menu
           items={menuItems}
           selectedKeys={[keys[keys.length - 1]]}
-          onSelect={() => setOpen(false)}
+          onSelect={(e) => {
+            navigate(e.key);
+            setOpen(false);
+          }}
         />
       </Styled.DrawerStyled>
     </Layout>

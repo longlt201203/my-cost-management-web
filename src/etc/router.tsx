@@ -9,7 +9,6 @@ import BoardDetailPage from "../pages/Dashboard/Boards/BoardDetailPage";
 import DashboardAnalyticsPage from "../pages/Dashboard/Analytics";
 import DashboardCategoriesPage from "../pages/Dashboard/Categories";
 import AuthPage from "../pages/AuthPage";
-import DashboardAccountPage from "../pages/Dashboard/Account";
 
 const router = createBrowserRouter([
   {
@@ -52,10 +51,10 @@ const router = createBrowserRouter([
                 path: "categories",
                 element: <DashboardCategoriesPage />,
               },
-              {
-                path: "account",
-                element: <DashboardAccountPage />,
-              },
+              // {
+              //   path: "account",
+              //   element: <DashboardAccountPage />,
+              // },
             ],
           },
         ],

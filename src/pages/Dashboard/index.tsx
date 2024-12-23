@@ -11,7 +11,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import GridViewIcon from "@mui/icons-material/GridView";
 import CategoryIcon from "@mui/icons-material/Category";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+// import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { MenuItemType } from "antd/es/menu/interface";
@@ -54,11 +54,11 @@ export default function DashboardLayout() {
       label: t("categories"),
       icon: <CategoryIcon />,
     },
-    {
-      key: "account",
-      label: t("account"),
-      icon: <AccountCircleOutlinedIcon />,
-    },
+    // {
+    //   key: "account",
+    //   label: t("account"),
+    //   icon: <AccountCircleOutlinedIcon />,
+    // },
   ];
 
   return (

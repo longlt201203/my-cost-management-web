@@ -62,5 +62,6 @@
   "contentRequired": "Please enter content",
   "logout": "Logout",
   "emailExists": "Email already exists",
-  "phoneExists": "Phone number already exists"
+  "phoneExists": "Phone number already exists",
+  "account": "Account"
 }

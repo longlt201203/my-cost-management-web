@@ -208,16 +208,16 @@ export default function DashboardAnalyticsPage() {
                   </Flex>
                 ),
               },
-              {
-                dataIndex: "paymentMethod",
-                key: "paymentMethod",
-                title: t("paymentMethod"),
-              },
-              {
-                dataIndex: "location",
-                key: "location",
-                title: t("location"),
-              },
+              // {
+              //   dataIndex: "paymentMethod",
+              //   key: "paymentMethod",
+              //   title: t("paymentMethod"),
+              // },
+              // {
+              //   dataIndex: "location",
+              //   key: "location",
+              //   title: t("location"),
+              // },
               {
                 dataIndex: "notes",
                 key: "notes",

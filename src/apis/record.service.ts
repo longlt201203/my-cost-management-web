@@ -42,6 +42,7 @@ export interface ListRecordsQuery {
 
 export interface CreateRecordRequest {
   content: string;
+  createdAt: Date;
 }
 
 export interface UpdateRecordRequest extends CreateRecordRequest {}

@@ -63,5 +63,9 @@
   "logout": "Đăng xuất",
   "emailExists": "Email đã tồn tại",
   "phoneExists": "Số điện thoại đã tồn tại",
-  "account": "Tài khoản"
+  "account": "Tài khoản",
+  "success": "Thành công",
+  "error": "Lỗi",
+  "selectTime": "Chọn thời gian",
+  "timeRequired": "Vui lòng chọn thời gian"
 }

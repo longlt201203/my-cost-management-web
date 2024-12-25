@@ -63,5 +63,9 @@
   "logout": "Logout",
   "emailExists": "Email already exists",
   "phoneExists": "Phone number already exists",
-  "account": "Account"
+  "account": "Account",
+  "success": "Success",
+  "error": "Error",
+  "selectTime": "Select Time",
+  "timeRequired": "Please select time"
 }

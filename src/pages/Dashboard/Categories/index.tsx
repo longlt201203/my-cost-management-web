@@ -66,7 +66,7 @@ export default function DashboardCategoriesPage() {
         });
       }
       messageApi.success({
-        content: "Success!",
+        content: t("success"),
       });
       setCategoryModalOpen(false);
       fetchCategories();
@@ -85,7 +85,7 @@ export default function DashboardCategoriesPage() {
       setDeleteCategoryModalOpen(false);
       fetchCategories();
       messageApi.success({
-        content: "Success!",
+        content: t("success"),
       });
     } catch (err) {
       handleError(err, showBoundary, messageApi, t);

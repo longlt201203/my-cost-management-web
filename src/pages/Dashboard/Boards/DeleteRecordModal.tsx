@@ -1,5 +1,4 @@
 import { Modal, Typography } from "antd";
-import { RecordResponse } from "../../../apis/record.service";
 import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;
@@ -7,13 +6,13 @@ const { Text } = Typography;
 export interface DeleteRecordModalProps {
   isOpen?: boolean;
   isLoading?: boolean;
-  record: RecordResponse;
+  recordId: number;
   onCancel?: () => void;
   onConfirmDelete?: (recordId: number) => void;
 }
 
 export default function DeleteRecordModal({
-  record,
+  recordId,
   isLoading,
   isOpen,
   onCancel,
@@ -31,7 +30,7 @@ export default function DeleteRecordModal({
       okButtonProps={{ variant: "solid", color: "danger", loading: isLoading }}
       cancelButtonProps={{ disabled: isLoading }}
       onCancel={onCancel}
-      onOk={() => onConfirmDelete && onConfirmDelete(record.id)}
+      onOk={() => onConfirmDelete && onConfirmDelete(recordId)}
       open={isOpen}
     >
       <Text>{t("deleteRecordMessage")}</Text>

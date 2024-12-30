@@ -24,7 +24,7 @@ export default function Login() {
     const code = btoa(`${values.email}:${values.password}`);
     const searchParams = new URLSearchParams();
     searchParams.set("code", code);
-    searchParams.set("callback", `${window.location.origin}/`);
+    searchParams.set("callback", `${window.location.origin}/auth`);
     window.location.href = `/api/auth/2/basic?${searchParams.toString()}`;
   };
 

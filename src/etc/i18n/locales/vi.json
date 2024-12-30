@@ -62,5 +62,11 @@
   "contentRequired": "Vui lòng nhập nội dung",
   "logout": "Đăng xuất",
   "emailExists": "Email đã tồn tại",
-  "phoneExists": "Số điện thoại đã tồn tại"
+  "phoneExists": "Số điện thoại đã tồn tại",
+  "account": "Tài khoản",
+  "themeModal": {
+    "themeSettings": "Tùy chỉnh giao diện",
+    "darkMode": "Chế độ tối",
+    "colorTheme": "Màu chủ đề"
+  }
 }

@@ -10,6 +10,8 @@ dayjs.extend(timezone);
 dayjs.extend(utc);
 import { DefaultTheme, ThemeProvider } from "styled-components";
 import { createStyledBreakpointsTheme } from "styled-breakpoints";
+import { Provider as ReduxProvider } from 'react-redux';
+import { store } from "./store/index.ts";
 
 export const breakpoints = {
   xs: "360px",
@@ -27,7 +29,9 @@ const theme: DefaultTheme = createStyledBreakpointsTheme({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
+      <ReduxProvider store={store}>
+        <RouterProvider router={router} />
+      </ReduxProvider>
     </ThemeProvider>
   </StrictMode>
 );

@@ -1,4 +1,13 @@
-import { Dropdown, Flex, FloatButton, MenuProps, Tabs, Typography } from "antd";
+import {
+  Dropdown,
+  Flex,
+  FloatButton,
+  MenuProps,
+  message,
+  Tabs,
+  TabsProps,
+  Typography,
+} from "antd";
 import { useTranslation } from "react-i18next";
 import Login from "./Login";
 import { Languages } from "../../etc/i18n";
@@ -6,19 +15,48 @@ import { GlobalOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import Register from "./Register";
 import { useSearchParams } from "react-router-dom";
+import { TFunction } from "i18next";
 
 const { Title } = Typography;
 
+const getTabItems = (
+  t: TFunction<"translation", undefined>
+): TabsProps["items"] => [
+  {
+    key: "login",
+    label: t("login"),
+    children: <Login />,
+  },
+  {
+    key: "register",
+    label: t("register"),
+    children: <Register />,
+  },
+];
+
 export default function AuthPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [messageApi, contextHolder] = message.useMessage();
   const { t, i18n } = useTranslation();
+  const tabItems = getTabItems(t)!;
   const handleChangeLanguage: MenuProps["onClick"] = (e) => {
     localStorage.setItem("currentLanguage", e.key);
     i18n.changeLanguage(e.key);
   };
   const [currentKey, setCurrentKey] = useState(
-    searchParams.get("tab") || "login"
+    searchParams.get("tab") || tabItems[0].key
   );
+
+  useEffect(() => {
+    if (searchParams.get("status") == "success") {
+      window.location.href = "/";
+    } else {
+      const error = searchParams.get("error");
+      if (error) {
+        messageApi.error(t(error));
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     setSearchParams({ tab: currentKey });
@@ -26,6 +64,7 @@ export default function AuthPage() {
 
   return (
     <>
+      {contextHolder}
       <Flex
         vertical
         justify="center"
@@ -39,18 +78,7 @@ export default function AuthPage() {
           className="w-full"
           activeKey={currentKey}
           onChange={(k) => setCurrentKey(k)}
-          items={[
-            {
-              key: "login",
-              label: t("login"),
-              children: <Login />,
-            },
-            {
-              key: "register",
-              label: t("register"),
-              children: <Register />,
-            },
-          ]}
+          items={tabItems}
         />
       </Flex>
       <Dropdown

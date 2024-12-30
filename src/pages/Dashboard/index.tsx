@@ -25,9 +25,6 @@ import { RootState } from "../../store";
 const { Text } = Typography;
 
 export default function DashboardLayout() {
-  // const {
-  //   token: { colorBgContainer },
-  // } = theme.useToken();
   const { theme } = useSelector((state: RootState) => state.theme);
   const { t } = useTranslation();
   const navigate = useNavigate();

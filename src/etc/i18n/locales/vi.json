@@ -64,6 +64,10 @@
   "emailExists": "Email đã tồn tại",
   "phoneExists": "Số điện thoại đã tồn tại",
   "account": "Tài khoản",
+  "success": "Thành công",
+  "error": "Lỗi",
+  "selectTime": "Chọn thời gian",
+  "timeRequired": "Vui lòng chọn thời gian",
   "themeModal": {
     "themeSettings": "Tùy chỉnh giao diện",
     "darkMode": "Chế độ tối",

@@ -73,7 +73,7 @@ export default function DashboardBoardsPage() {
       }
       setIsModalOpen(false);
       messageApi.success({
-        content: "Success!",
+        content: t("success"),
       });
       fetchBoards();
     } catch (err) {
@@ -88,7 +88,7 @@ export default function DashboardBoardsPage() {
       await BoardService.delete(boardId);
       setIsDeleteModalOpen(false);
       messageApi.success({
-        content: "Success!",
+        content: t("success"),
       });
       fetchBoards();
     } catch (err) {

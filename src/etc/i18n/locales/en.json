@@ -64,6 +64,10 @@
   "emailExists": "Email already exists",
   "phoneExists": "Phone number already exists",
   "account": "Account",
+  "success": "Success",
+  "error": "Error",
+  "selectTime": "Select Time",
+  "timeRequired": "Please select time",
   "themeModal": {
     "themeSettings": "Theme Settings",
     "darkMode": "Dark mode",

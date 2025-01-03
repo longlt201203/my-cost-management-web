@@ -45,6 +45,7 @@ export interface CategoryResponse {
   id: number;
   name: string;
   color?: string;
+  accountId?: number;
 }
 
 export interface GetCategoriesQuery {

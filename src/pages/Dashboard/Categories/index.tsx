@@ -9,6 +9,7 @@ import CategoryModal from "./CategoryModal";
 import { useErrorBoundary } from "react-error-boundary";
 import handleError from "../../../etc/handle-error";
 import DeleteCategoryModal from "./DeleteCategoryModal";
+import { useAuth } from "../../../contexts/auth.context";
 
 const { Title } = Typography;
 
@@ -19,6 +20,7 @@ export interface CategoryTableItemType extends CategoryResponse {
 
 export default function DashboardCategoriesPage() {
   const { t, i18n } = useTranslation();
+  const { profile } = useAuth();
   const emptyCategory: CategoryResponse = {
     id: 0,
     name: "",
@@ -132,6 +134,9 @@ export default function DashboardCategoriesPage() {
             onChange: (ids) => {
               setDeleteIds(ids.map(Number));
             },
+            getCheckboxProps: (record) => ({
+              disabled: record.accountId != profile.id,
+            }),
             selectedRowKeys: deleteIds.map(String),
           }}
           dataSource={categories.map((item, index) => ({
@@ -158,6 +163,7 @@ export default function DashboardCategoriesPage() {
               render: (_, category) => (
                 <Flex gap="small" justify="center" align="center">
                   <Button
+                    disabled={category.accountId != profile.id}
                     size="small"
                     variant="outlined"
                     icon={<EditOutlined fontSize="small" />}

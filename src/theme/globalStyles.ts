@@ -1,10 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
-    :root {
-        background: ${localStorage.getItem("isDarkMode") === "true" ? "#383838" : "#f5f5f5"}
-    }
-
     /* Scrollbar */
     ::-webkit-scrollbar {
         border-radius: 0;

@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { darkTheme, lightTheme } from "../theme";
 
-const PRIMARY_COLOR = String(localStorage.getItem("colorTheme"));
+const PRIMARY_COLOR = localStorage.getItem("colorTheme") ? 
+String(localStorage.getItem("colorTheme")) : "#81BFDA";
 
-const isDarkMode = Boolean(localStorage.getItem("isDarkMode"))
+const isDarkMode = localStorage.getItem("isDarkMode") === "true" ? true : false;
 
 const initialState = {
     isDarkMode,
@@ -22,7 +23,7 @@ const themeSlice = createSlice({
         },
         setPrimaryColor: (state, action) => {
             state.colorPrimary = action.payload;
-            localStorage.setItem("colorTheme", JSON.stringify(state.colorPrimary));
+            localStorage.setItem("colorTheme", state.colorPrimary);
         },
     },
 });

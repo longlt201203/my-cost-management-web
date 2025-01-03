@@ -16,6 +16,8 @@ import { useEffect, useState } from "react";
 import Register from "./Register";
 import { useSearchParams } from "react-router-dom";
 import { TFunction } from "i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const { Title } = Typography;
 
@@ -38,6 +40,7 @@ export default function AuthPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [messageApi, contextHolder] = message.useMessage();
   const { t, i18n } = useTranslation();
+  const { theme } = useSelector((state: RootState) => state.theme);
   const tabItems = getTabItems(t)!;
   const handleChangeLanguage: MenuProps["onClick"] = (e) => {
     localStorage.setItem("currentLanguage", e.key);
@@ -70,6 +73,7 @@ export default function AuthPage() {
         justify="center"
         align="center"
         className="mx-auto max-w-sm min-h-screen"
+        style={{ background: theme.palette.background.paper }}
       >
         <Title level={2}>{t(currentKey)}</Title>
         <Tabs
@@ -79,6 +83,7 @@ export default function AuthPage() {
           activeKey={currentKey}
           onChange={(k) => setCurrentKey(k)}
           items={tabItems}
+          style={{ background: theme.palette.background.default }}
         />
       </Flex>
       <Dropdown

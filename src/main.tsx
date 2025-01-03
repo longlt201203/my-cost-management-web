@@ -12,6 +12,7 @@ import { DefaultTheme, ThemeProvider } from "styled-components";
 import { createStyledBreakpointsTheme } from "styled-breakpoints";
 import { Provider as ReduxProvider } from 'react-redux';
 import { store } from "./store/index.ts";
+import GlobalStyles from "./theme/globalStyles.ts";
 
 export const breakpoints = {
   xs: "360px",
@@ -32,6 +33,7 @@ createRoot(document.getElementById("root")!).render(
       <ReduxProvider store={store}>
         <RouterProvider router={router} />
       </ReduxProvider>
+      <GlobalStyles />
     </ThemeProvider>
   </StrictMode>
 );

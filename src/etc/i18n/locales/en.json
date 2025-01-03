@@ -67,5 +67,10 @@
   "success": "Success",
   "error": "Error",
   "selectTime": "Select Time",
-  "timeRequired": "Please select time"
+  "timeRequired": "Please select time",
+  "themeModal": {
+    "themeSettings": "Theme Settings",
+    "darkMode": "Dark mode",
+    "colorTheme": "Color theme"
+  }
 }

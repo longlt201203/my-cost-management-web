@@ -2,9 +2,12 @@ import { Button, Dropdown, MenuProps } from "antd";
 import { Languages } from "../../../etc/i18n";
 import { GlobalOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 export default function Language() {
   const { i18n } = useTranslation();
+  const { theme } = useSelector((state: RootState) => state.theme);
 
   const handleChangeLanguage: MenuProps["onClick"] = (e) => {
     localStorage.setItem("currentLanguage", e.key);
@@ -23,7 +26,7 @@ export default function Language() {
       placement="bottomRight"
     >
       <Button type="text">
-        <GlobalOutlined />
+        <GlobalOutlined style={{ color: theme.palette.text.primary }}/>
       </Button>
     </Dropdown>
   );

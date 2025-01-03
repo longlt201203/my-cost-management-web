@@ -67,5 +67,10 @@
   "success": "Thành công",
   "error": "Lỗi",
   "selectTime": "Chọn thời gian",
-  "timeRequired": "Vui lòng chọn thời gian"
+  "timeRequired": "Vui lòng chọn thời gian",
+  "themeModal": {
+    "themeSettings": "Tùy chỉnh giao diện",
+    "darkMode": "Chế độ tối",
+    "colorTheme": "Màu chủ đề"
+  }
 }

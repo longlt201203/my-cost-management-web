@@ -4,7 +4,6 @@ import {
   FloatButton,
   Layout,
   Menu,
-  theme,
   Typography,
 } from "antd";
 import HomeIcon from "@mui/icons-material/Home";
@@ -20,13 +19,13 @@ import { MenuOutlined } from "@mui/icons-material";
 import KeyboardBackspaceOutlinedIcon from "@mui/icons-material/KeyboardBackspaceOutlined";
 import Header from "./Header";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const { Text } = Typography;
 
 export default function DashboardLayout() {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+  const { theme } = useSelector((state: RootState) => state.theme);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -63,17 +62,23 @@ export default function DashboardLayout() {
 
   return (
     <Layout className="min-h-screen">
-      <Layout.Sider collapsible className="max-md:hidden">
+      <Layout.Sider 
+        collapsible 
+        className="max-md:hidden"
+      >
         <Menu
           items={menuItems}
-          theme="dark"
+          theme={"dark"}
           selectedKeys={keys.slice(1)}
           onSelect={(e) => navigate(e.key)}
         />
       </Layout.Sider>
       <Layout>
         <Header />
-        <Layout className="px-8 max-md:p-4">
+        <Layout 
+          className="px-8 max-md:p-4"
+          style={{ background: theme.palette.background.paper }}
+        >
           <Flex className="my-4">
             <Button
               type="link"
@@ -84,15 +89,15 @@ export default function DashboardLayout() {
             </Button>
           </Flex>
           <Layout.Content
-            style={{ background: colorBgContainer }}
+            style={{ background: theme.palette.background.default }}
             className="rounded-lg"
           >
             <Outlet />
           </Layout.Content>
         </Layout>
-        <Layout.Footer>
+        <Layout.Footer style={{ background: theme.palette.background.paper }}>
           <Flex justify="center">
-            <Text className="text-center">
+            <Text className="text-center" style={{ color: theme.palette.text.primary }}>
               &copy; 2024 Le Thanh Long, Bui Phan Long. All rights reserved.
             </Text>
           </Flex>

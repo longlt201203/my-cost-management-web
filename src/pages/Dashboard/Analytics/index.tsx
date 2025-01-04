@@ -23,8 +23,8 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Chart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
+import AnalysisService, { AnalysisDTO, MonthlyAnalysisChartResponse, MonthlyAnalysisResponse, YearlyAnalysisChartResponse, YearlyAnalysisResponse } from "../../../apis/analysis.service";
 import { CategoryResponse } from "../../../apis/categories.service";
-import AnalysisService from "../../../apis/analysis.service";
 import { useDebounce } from "../../../etc/debouce";
 
 const { Title, Text } = Typography;
@@ -50,6 +50,22 @@ export default function DashboardAnalyticsPage() {
     });
   const [isDailyAnalysisLoading, setIsDailyAnalysisLoading] = useState(false);
   const [reAnalyzing, setReAnalyzing] = useState(false);
+  const [monthlyAnalysisQuery, setMonthlyAnalysisQuery] =
+    useState<AnalysisDTO>({
+      boardId: Number(boardId),
+      date: dayjs(),
+      timezone: 'Asia/Ho_Chi_Minh',
+    });
+  const [monthlyAnalysis, setMonthlyAnalysis] = useState<MonthlyAnalysisResponse>();
+  const [monthlyChartData, setMonthlyChartData] = useState<MonthlyAnalysisChartResponse>();
+  const [yearlyAnalysisQuery, setYearlyAnalysisQuery] =
+    useState<AnalysisDTO>({
+      boardId: Number(boardId),
+      date: dayjs(),
+      timezone: 'Asia/Ho_Chi_Minh',
+    })
+  const [yearlyAnalysis, setYearlyAnalysis] = useState<YearlyAnalysisResponse>();
+  const [yearlyChartData, setYearlyChartData] = useState<YearlyAnalysisChartResponse>();
 
   const fetchBoards = async () => {
     try {
@@ -130,6 +146,108 @@ export default function DashboardAnalyticsPage() {
     }
     setReAnalyzing(false);
   };
+
+  // Monthly Analysis
+  const fetchMonthlyAnalysis = async () => {
+    if (boardId !== undefined && boardId !== "") {
+      try {
+        const monthlyQuery = {
+          ...monthlyAnalysisQuery,
+          boardId: Number(boardId),
+        }
+        const data = await AnalysisService.getMonthlyAnalysis(monthlyQuery);
+        setMonthlyAnalysis(data);
+      } catch (err) {
+        handleError(err, showBoundary, messageApi, t);
+      }
+    }
+  };
+
+  const fetchMonthlyDataChart = async () => {
+    if (boardId !== undefined && boardId !== "") {
+      try {
+        const monthlyQuery = {
+          ...monthlyAnalysisQuery,
+          boardId: Number(boardId),
+        }
+        const dataChart = await AnalysisService.getMonthAnalysisChart(monthlyQuery);
+        setMonthlyChartData(dataChart);
+      } catch (err) {
+        handleError(err, showBoundary, messageApi, t);
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchMonthlyAnalysis();
+    fetchMonthlyDataChart();
+  }, []);
+
+  useEffect(() => {
+    if (boardId) {
+      fetchMonthlyAnalysis();
+      fetchMonthlyDataChart();
+    }
+  }, [boardId, monthlyAnalysisQuery]);
+
+  const updateMonthlyAnalysisQuery = (data: Partial<AnalysisDTO>) => {
+    const newQuery = {
+      ...monthlyAnalysisQuery,
+      ...data,
+    };
+    setMonthlyAnalysisQuery(newQuery);
+  };
+
+  //Yearly Analysis
+  const fetchYearlyAnalysis = async () => {
+    if (boardId !== undefined && boardId !== "") {
+      try {
+        const yearlyQuery = {
+          ...yearlyAnalysisQuery,
+          boardId: Number(boardId),
+        }
+        const data = await AnalysisService.getYearlyAnalysis(yearlyQuery);
+        setYearlyAnalysis(data);
+      } catch (err) {
+        handleError(err, showBoundary, messageApi, t);
+      }
+    }
+  };
+
+  const fetchYearlyDataChart = async () => {
+    if (boardId !== undefined && boardId !== "") {
+      try {
+        const yearlyQuery = {
+          ...yearlyAnalysisQuery,
+          boardId: Number(boardId),
+        }
+        const dataChart = await AnalysisService.getYearlyAnalysisChart(yearlyQuery);
+        setYearlyChartData(dataChart);
+      } catch (err) {
+        handleError(err, showBoundary, messageApi, t);
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchYearlyAnalysis();
+    fetchYearlyDataChart();
+  }, []);
+
+  useEffect(() => {
+    if (boardId) {
+      fetchYearlyAnalysis();
+      fetchYearlyDataChart();
+    }
+  }, [boardId, yearlyAnalysisQuery]);
+
+  const updateYearlyAnalysisQuery = (data: Partial<AnalysisDTO>) => {
+    const newQuery = {
+      ...yearlyAnalysisQuery,
+      ...data,
+    };
+    setYearlyAnalysisQuery(newQuery);
+  }
 
   return (
     <>
@@ -252,7 +370,14 @@ export default function DashboardAnalyticsPage() {
             <Flex vertical gap="small">
               <Title level={4}>{t("monthly")}</Title>
               <Flex>
-                <ControlledDatePicker picker="month" />
+                <ControlledDatePicker
+                  value={dayjs(monthlyAnalysisQuery.date)}
+                  picker="month"
+                  onChange={(v) => {
+                    updateMonthlyAnalysisQuery({ date: v })
+                  }}
+                  format="YYYY-MM"
+                />
               </Flex>
               <Chart
                 type="bar"
@@ -275,12 +400,17 @@ export default function DashboardAnalyticsPage() {
                 series={[
                   {
                     name: "Daily Spent",
-                    data: Array.from({ length: 30 }, () =>
-                      Math.floor(1 + Math.random() * 100)
-                    ),
+                    // data: Array.from({ length: 30 }, () =>
+                    //   Math.floor(1 + Math.random() * 100)
+                    // ),
+                    data: monthlyChartData?.charts ? monthlyChartData.charts : []
                   },
                 ]}
               />
+              <Text>
+                <Text strong>{t("totalSpent")}:</Text> {monthlyAnalysis?.total}{" "}
+                {board?.currencyUnit}
+              </Text>
             </Flex>
           </Col>
           <Col
@@ -292,7 +422,14 @@ export default function DashboardAnalyticsPage() {
             <Flex vertical gap="small">
               <Title level={4}>{t("yearly")}</Title>
               <Flex>
-                <ControlledDatePicker picker="year" />
+                <ControlledDatePicker
+                  value={dayjs(yearlyAnalysisQuery.date)}
+                  picker="year"
+                  onChange={(v) => {
+                    updateYearlyAnalysisQuery({ date: v })
+                  }}
+                  format="YYYY"
+                />
               </Flex>
               <Chart
                 type="bar"
@@ -314,13 +451,18 @@ export default function DashboardAnalyticsPage() {
                 }}
                 series={[
                   {
-                    name: "Daily Spent",
-                    data: Array.from({ length: 12 }, () =>
-                      Math.floor(1 + Math.random() * 100)
-                    ),
+                    name: "Yearly Spent",
+                    // data: Array.from({ length: 12 }, () =>
+                    //   Math.floor(1 + Math.random() * 100)
+                    // ),
+                    data: yearlyChartData?.charts ? yearlyChartData.charts : [],
                   },
                 ]}
               />
+              <Text>
+                <Text strong>{t("totalSpent")}:</Text> {yearlyAnalysis?.total}{" "}
+                {board?.currencyUnit}
+              </Text>
             </Flex>
           </Col>
         </Row>

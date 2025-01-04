@@ -5,8 +5,10 @@ import { Outlet } from "react-router-dom";
 import handleError from "../etc/handle-error";
 import { useErrorBoundary } from "react-error-boundary";
 import { message } from "antd";
+import { useTranslation } from "react-i18next";
 
 export default function AuthProvider() {
+  const { t } = useTranslation();
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
   const [profile, setProfile] = useState<AuthProfileResponse>({
@@ -22,7 +24,7 @@ export default function AuthProvider() {
       const profile = await AuthService.getAuthProfile();
       setProfile(profile);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
 

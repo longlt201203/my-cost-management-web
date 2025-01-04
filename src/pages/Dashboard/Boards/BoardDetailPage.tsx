@@ -9,11 +9,12 @@ import RecordService, {
   RecordResponse,
 } from "../../../apis/record.service";
 import dayjs from "dayjs";
-import RecordModal from "./RecordModal";
+import RecordModal, { RecordModalFormType } from "./RecordModal";
 import { ArrowBack, DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import DeleteRecordModal from "./DeleteRecordModal";
 import ControlledDatePicker from "../../../components/ControlledDatePicker";
 import { useTranslation } from "react-i18next";
+import { useDebounce } from "../../../etc/debouce";
 
 const { Title } = Typography;
 
@@ -23,10 +24,10 @@ export interface RecordTableItemType extends RecordResponse {
 }
 
 export default function BoardDetailPage() {
-  const emptyRecord: RecordResponse = {
+  const emptyRecord: RecordModalFormType = {
     id: 0,
     content: "",
-    createdAt: "",
+    createdAt: dayjs(),
   };
 
   const { t } = useTranslation();
@@ -34,12 +35,11 @@ export default function BoardDetailPage() {
   const { showBoundary } = useErrorBoundary();
   const [messageApi, contextHolder] = message.useMessage();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [currentTimeout, setCurrentTimeout] = useState<number>();
   const { boardId } = useParams();
   const [board, setBoard] = useState<BoardResponse>();
   const [boardRecords, setBoardRecords] = useState<RecordResponse[]>([]);
   const [currentRecord, setCurrentRecord] =
-    useState<RecordResponse>(emptyRecord);
+    useState<RecordModalFormType>(emptyRecord);
   const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
   const [isRecordModalLoading, setIsRecordModalLoading] = useState(false);
   const [isDeleteRecordModalOpen, setIsDeleteRecordModalOpen] = useState(false);
@@ -57,7 +57,7 @@ export default function BoardDetailPage() {
       const board = await BoardService.getBoard(Number(boardId));
       setBoard(board);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
 
@@ -70,7 +70,7 @@ export default function BoardDetailPage() {
       );
       setBoardRecords(records);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsRecordTableLoading(false);
   };
@@ -83,6 +83,14 @@ export default function BoardDetailPage() {
     setListRecordsQuery(newQuery);
   };
 
+  const changeSearchParamsAndRefetch = useDebounce(() => {
+    const searchParams = new URLSearchParams();
+    if (listRecordsQuery.date)
+      searchParams.set("date", listRecordsQuery.date.toISOString());
+    setSearchParams(searchParams);
+    fetchRecords();
+  }, 500);
+
   useEffect(() => {
     fetchBoard();
   }, []);
@@ -90,37 +98,31 @@ export default function BoardDetailPage() {
   useEffect(() => {
     setBoardRecords([]);
     setIsRecordTableLoading(true);
-    if (currentTimeout) clearTimeout(currentTimeout);
-    setCurrentTimeout(
-      setTimeout(() => {
-        const searchParams = new URLSearchParams();
-        if (listRecordsQuery.date)
-          searchParams.set("date", listRecordsQuery.date.toISOString());
-        setSearchParams(searchParams);
-        fetchRecords();
-      }, 500)
-    );
+    changeSearchParamsAndRefetch();
   }, [listRecordsQuery]);
 
-  const handleModalFormSubmit = async (record: RecordResponse) => {
+  const handleModalFormSubmit = async (record: RecordModalFormType) => {
+    console.log(record);
     setIsRecordModalLoading(true);
     try {
       if (record.id) {
         await RecordService.updateRecord(Number(boardId), record.id, {
           content: record.content,
+          createdAt: record.createdAt.toDate(),
         });
       } else {
         await RecordService.createRecord(Number(boardId), {
           content: record.content,
+          createdAt: record.createdAt.toDate(),
         });
       }
       setIsRecordModalOpen(false);
       messageApi.success({
-        content: "Success!",
+        content: t("success"),
       });
       fetchRecords();
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsRecordModalLoading(false);
   };
@@ -131,11 +133,11 @@ export default function BoardDetailPage() {
       await RecordService.deleteRecord(Number(boardId), recordId);
       setIsDeleteRecordModalOpen(false);
       messageApi.success({
-        content: "Success!",
+        content: t("success"),
       });
       fetchRecords();
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsDeleteRecordModalLoading(false);
   };
@@ -194,7 +196,6 @@ export default function BoardDetailPage() {
                 dataSource={boardRecords.map((item, index) => ({
                   ...item,
                   index: index + 1,
-                  createdAt: dayjs(item.createdAt).format("HH:mm:ss"),
                   key: item.id.toString(),
                 }))}
                 columns={[
@@ -212,33 +213,40 @@ export default function BoardDetailPage() {
                     dataIndex: "createdAt",
                     title: t("createdAt"),
                     key: "createdAt",
+                    render: (value) => dayjs(value).format("HH:mm:ss"),
                   },
                   {
                     key: "actions",
-                    render: (_, record) =>
-                      dayjs().isSame(dayjs(listRecordsQuery.date), "date") && (
-                        <Flex gap="small" justify="center" align="center">
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            icon={<EditOutlined fontSize="small" />}
-                            onClick={() => {
-                              setCurrentRecord(record);
-                              setIsRecordModalOpen(true);
-                            }}
-                          ></Button>
-                          <Button
-                            size="small"
-                            color="danger"
-                            variant="outlined"
-                            icon={<DeleteOutlined fontSize="small" />}
-                            onClick={() => {
-                              setCurrentRecord(record);
-                              setIsDeleteRecordModalOpen(true);
-                            }}
-                          ></Button>
-                        </Flex>
-                      ),
+                    render: (_, record) => (
+                      <Flex gap="small" justify="center" align="center">
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          icon={<EditOutlined fontSize="small" />}
+                          onClick={() => {
+                            console.log(record.createdAt);
+                            setCurrentRecord({
+                              ...record,
+                              createdAt: dayjs(record.createdAt),
+                            });
+                            setIsRecordModalOpen(true);
+                          }}
+                        ></Button>
+                        <Button
+                          size="small"
+                          color="danger"
+                          variant="outlined"
+                          icon={<DeleteOutlined fontSize="small" />}
+                          onClick={() => {
+                            setCurrentRecord({
+                              ...record,
+                              createdAt: dayjs(record.createdAt),
+                            });
+                            setIsDeleteRecordModalOpen(true);
+                          }}
+                        ></Button>
+                      </Flex>
+                    ),
                   },
                 ]}
                 scroll={{ x: 720 }}
@@ -259,7 +267,7 @@ export default function BoardDetailPage() {
         onSubmit={handleModalFormSubmit}
       />
       <DeleteRecordModal
-        record={currentRecord}
+        recordId={currentRecord.id}
         isOpen={isDeleteRecordModalOpen}
         isLoading={isDeleteRecordModalLoading}
         onCancel={() => {

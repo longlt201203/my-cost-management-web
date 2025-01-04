@@ -1,5 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 
+axios.defaults.withCredentials = true;
+
 export default class AxiosService {
   static getConfig(config?: AxiosRequestConfig): AxiosRequestConfig {
     const accessToken = localStorage.getItem("accessToken");

@@ -15,11 +15,14 @@ import CurrencyUnit, { getCurrencyUnit } from "../../../etc/currency-unit";
 import placeholder_600x400 from "../../../assets/placeholder_600x400.svg";
 import { useTranslation } from "react-i18next";
 import { Languages } from "../../../etc/i18n";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 const { Title, Text } = Typography;
 
 export default function DashboardBoardsPage() {
   const { t, i18n } = useTranslation();
+  const { theme } = useSelector((state: RootState) => state.theme);
 
   const emptyBoard: BoardResponse = {
     id: 0,
@@ -46,7 +49,7 @@ export default function DashboardBoardsPage() {
       const boards = await BoardService.listBoards();
       setBoards(boards);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
 
@@ -70,11 +73,11 @@ export default function DashboardBoardsPage() {
       }
       setIsModalOpen(false);
       messageApi.success({
-        content: "Success!",
+        content: t("success"),
       });
       fetchBoards();
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsModalLoading(false);
   };
@@ -85,11 +88,11 @@ export default function DashboardBoardsPage() {
       await BoardService.delete(boardId);
       setIsDeleteModalOpen(false);
       messageApi.success({
-        content: "Success!",
+        content: t("success"),
       });
       fetchBoards();
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsDeleteModalLoading(false);
   };
@@ -124,6 +127,7 @@ export default function DashboardBoardsPage() {
               <Card
                 cover={<img src={placeholder_600x400} />}
                 bordered={false}
+                style={{ background: theme.palette.background.default }}
                 actions={[
                   <Button
                     key="view"
@@ -134,6 +138,7 @@ export default function DashboardBoardsPage() {
                       navigate(`/boards/${item.id}`);
                     }}
                     icon={<LaunchOutlined fontSize="small" />}
+                    style={{ background: theme.palette.background.default }}
                   ></Button>,
                   <Button
                     key="edit"
@@ -145,6 +150,10 @@ export default function DashboardBoardsPage() {
                       setIsModalOpen(true);
                     }}
                     icon={<EditOutlined fontSize="small" />}
+                    style={{ 
+                      background: theme.palette.background.default,
+                      color: theme.palette.text.primary 
+                    }}
                   ></Button>,
                   <Button
                     key="delete"
@@ -157,6 +166,7 @@ export default function DashboardBoardsPage() {
                       setIsDeleteModalOpen(true);
                     }}
                     icon={<DeleteOutline fontSize="small" />}
+                    style={{ background: theme.palette.background.default }}
                   ></Button>,
                 ]}
               >
@@ -164,11 +174,11 @@ export default function DashboardBoardsPage() {
                   title={item.title}
                   description={
                     <Flex vertical>
-                      <Text type="secondary">
+                      <Text type="secondary" style={{ color: theme.palette.text.primary }}>
                         {t("currencyUnit")}:{" "}
                         {getCurrencyUnit(item.currencyUnit)?.label}
                       </Text>
-                      <Text type="secondary">
+                      <Text type="secondary" style={{ color: theme.palette.text.primary }}>
                         {t("language")}:{" "}
                         {Languages[item.language as keyof typeof Languages]}
                       </Text>

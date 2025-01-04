@@ -1,14 +1,19 @@
-import { Button, Form, Input, Modal } from "antd";
+import { Button, DatePicker, Form, Input, Modal } from "antd";
 import { RecordResponse } from "../../../apis/record.service";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
+
+export interface RecordModalFormType extends Omit<RecordResponse, "createdAt"> {
+  createdAt: dayjs.Dayjs;
+}
 
 export interface RecordModalProps {
-  record: RecordResponse;
+  record: RecordModalFormType;
   isOpen?: boolean;
   isLoading?: boolean;
   onCancel?: () => void;
-  onSubmit?: (values: RecordResponse) => void;
+  onSubmit?: (values: RecordModalFormType) => void;
 }
 
 export default function RecordModal({
@@ -19,7 +24,7 @@ export default function RecordModal({
   onSubmit,
 }: RecordModalProps) {
   const { t } = useTranslation();
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<RecordModalFormType>();
 
   useEffect(() => {
     form.setFieldsValue(record);
@@ -49,17 +54,35 @@ export default function RecordModal({
         </>
       )}
     >
-      <Form<RecordResponse>
+      <Form<RecordModalFormType>
         form={form}
         disabled={isLoading}
         onFinish={onSubmit}
         layout="vertical"
       >
-        <Form.Item<RecordResponse> hidden name="id">
+        <Form.Item<RecordModalFormType> hidden name="id">
           <Input />
         </Form.Item>
-        <Form.Item<RecordResponse> name="content">
+        <Form.Item<RecordModalFormType>
+          label={t("content")}
+          name="content"
+          rules={[{ required: true, message: t("contentRequired") }]}
+        >
           <Input placeholder={t("enterContent")} />
+        </Form.Item>
+        <Form.Item<RecordModalFormType>
+          name="createdAt"
+          label={t("time")}
+          rules={[{ required: true, message: t("timeRequired") }]}
+        >
+          <DatePicker
+            showTime
+            showNow={false}
+            placeholder={t("selectTime")}
+            format="DD/MM/YYYY HH:mm"
+            allowClear={false}
+            maxDate={dayjs()}
+          />
         </Form.Item>
       </Form>
     </Modal>

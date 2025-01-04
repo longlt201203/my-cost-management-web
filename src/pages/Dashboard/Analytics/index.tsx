@@ -1,4 +1,14 @@
-import { Col, Flex, message, Row, Select, Table, Tag, Typography } from "antd";
+import {
+  Button,
+  Col,
+  Flex,
+  message,
+  Row,
+  Select,
+  Table,
+  Tag,
+  Typography,
+} from "antd";
 import ControlledDatePicker from "../../../components/ControlledDatePicker";
 import { useEffect, useState } from "react";
 import BoardService, {
@@ -15,6 +25,7 @@ import Chart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
 import AnalysisService, { AnalysisDTO, MonthlyAnalysisChartResponse, MonthlyAnalysisResponse, YearlyAnalysisChartResponse, YearlyAnalysisResponse } from "../../../apis/analysis.service";
 import { CategoryResponse } from "../../../apis/categories.service";
+import { useDebounce } from "../../../etc/debouce";
 
 const { Title, Text } = Typography;
 
@@ -37,10 +48,9 @@ export default function DashboardAnalyticsPage() {
     useState<GetDailyAnalysisQuery>({
       date: dayjs(searchParams.get("date") || undefined).toDate(),
     });
-  const [getDailyAnalysisTimeout, setGetDailyAnalysisTimeout] =
-    useState<number>();
   const [isDailyAnalysisLoading, setIsDailyAnalysisLoading] = useState(false);
-  const [monthlyAnalysisQuery, setMonthlyAnalysisQuery] = 
+  const [reAnalyzing, setReAnalyzing] = useState(false);
+  const [monthlyAnalysisQuery, setMonthlyAnalysisQuery] =
     useState<AnalysisDTO>({
       boardId: Number(boardId),
       date: dayjs(),
@@ -48,7 +58,7 @@ export default function DashboardAnalyticsPage() {
     });
   const [monthlyAnalysis, setMonthlyAnalysis] = useState<MonthlyAnalysisResponse>();
   const [monthlyChartData, setMonthlyChartData] = useState<MonthlyAnalysisChartResponse>();
-  const [yearlyAnalysisQuery, setYearlyAnalysisQuery] = 
+  const [yearlyAnalysisQuery, setYearlyAnalysisQuery] =
     useState<AnalysisDTO>({
       boardId: Number(boardId),
       date: dayjs(),
@@ -62,7 +72,7 @@ export default function DashboardAnalyticsPage() {
       const boards = await BoardService.listBoards();
       setBoards(boards);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
 
@@ -71,7 +81,7 @@ export default function DashboardAnalyticsPage() {
       const board = await BoardService.getBoard(Number(boardId));
       setBoard(board);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
   };
 
@@ -84,10 +94,18 @@ export default function DashboardAnalyticsPage() {
       );
       setDailyAnalytics(dailyAnalytics);
     } catch (err) {
-      handleError(err, showBoundary, messageApi);
+      handleError(err, showBoundary, messageApi, t);
     }
     setIsDailyAnalysisLoading(false);
   };
+
+  const changeSearchParamsAndRefetch = useDebounce(() => {
+    const searchParams = new URLSearchParams();
+    if (getDailyAnalysisQuery.date)
+      searchParams.set("date", getDailyAnalysisQuery.date.toISOString());
+    setSearchParams(searchParams);
+    fetchDailyAnalytics();
+  }, 500);
 
   useEffect(() => {
     fetchBoards();
@@ -103,16 +121,7 @@ export default function DashboardAnalyticsPage() {
     if (boardId) {
       setIsDailyAnalysisLoading(true);
       setDailyAnalytics(undefined);
-      if (getDailyAnalysisTimeout) clearTimeout(getDailyAnalysisTimeout);
-      setGetDailyAnalysisTimeout(
-        setTimeout(() => {
-          const searchParams = new URLSearchParams();
-          if (getDailyAnalysisQuery.date)
-            searchParams.set("date", getDailyAnalysisQuery.date.toISOString());
-          setSearchParams(searchParams);
-          fetchDailyAnalytics();
-        }, 500)
-      );
+      changeSearchParamsAndRefetch();
     }
   }, [boardId, getDailyAnalysisQuery]);
 
@@ -124,30 +133,48 @@ export default function DashboardAnalyticsPage() {
     setGetDailyAnalysisQuery(newQuery);
   };
 
+  const reAnalyze = async () => {
+    setReAnalyzing(true);
+    try {
+      await AnalysisService.analyzeDaily({
+        boardId: Number(boardId),
+        date: getDailyAnalysisQuery.date,
+      });
+      fetchDailyAnalytics();
+    } catch (err) {
+      handleError(err, showBoundary, messageApi, t);
+    }
+    setReAnalyzing(false);
+  };
+
   // Monthly Analysis
   const fetchMonthlyAnalysis = async () => {
-    try {
-      const monthlyQuery = {
-        ...monthlyAnalysisQuery,
-        boardId: Number(boardId),
+    if (boardId !== undefined && boardId !== "") {
+      try {
+        const monthlyQuery = {
+          ...monthlyAnalysisQuery,
+          boardId: Number(boardId),
+        }
+        const data = await AnalysisService.getMonthlyAnalysis(monthlyQuery);
+        setMonthlyAnalysis(data);
+      } catch (err) {
+        handleError(err, showBoundary, messageApi, t);
       }
-      const data = await AnalysisService.getMonthlyAnalysis(monthlyQuery);
-      setMonthlyAnalysis(data);
-    } catch (err) {
-      handleError(err, showBoundary, messageApi);
     }
   };
 
   const fetchMonthlyDataChart = async () => {
-    try {
-      const monthlyQuery = {
-        ...monthlyAnalysisQuery,
-        boardId: Number(boardId),
+    if (boardId !== undefined && boardId !== "") {
+      try {
+        const monthlyQuery = {
+          ...monthlyAnalysisQuery,
+          boardId: Number(boardId),
+        }
+        const dataChart = await AnalysisService.getMonthAnalysisChart(monthlyQuery);
+        setMonthlyChartData(dataChart);
+      } catch (err) {
+        handleError(err, showBoundary, messageApi, t);
       }
-      const dataChart = await AnalysisService.getMonthAnalysisChart(monthlyQuery);
-      setMonthlyChartData(dataChart);
-    } catch (err) {
-      handleError(err, showBoundary, messageApi);
     }
   }
 
@@ -173,28 +200,32 @@ export default function DashboardAnalyticsPage() {
 
   //Yearly Analysis
   const fetchYearlyAnalysis = async () => {
-    try {
-      const yearlyQuery = {
-        ...yearlyAnalysisQuery,
-        boardId: Number(boardId),
+    if (boardId !== undefined && boardId !== "") {
+      try {
+        const yearlyQuery = {
+          ...yearlyAnalysisQuery,
+          boardId: Number(boardId),
+        }
+        const data = await AnalysisService.getYearlyAnalysis(yearlyQuery);
+        setYearlyAnalysis(data);
+      } catch (err) {
+        handleError(err, showBoundary, messageApi, t);
       }
-      const data = await AnalysisService.getYearlyAnalysis(yearlyQuery);
-      setYearlyAnalysis(data);
-    } catch (err) {
-      handleError(err, showBoundary, messageApi);
     }
   };
 
   const fetchYearlyDataChart = async () => {
-    try { 
-      const yearlyQuery = {
-        ...yearlyAnalysisQuery,
-        boardId: Number(boardId),
+    if (boardId !== undefined && boardId !== "") {
+      try {
+        const yearlyQuery = {
+          ...yearlyAnalysisQuery,
+          boardId: Number(boardId),
+        }
+        const dataChart = await AnalysisService.getYearlyAnalysisChart(yearlyQuery);
+        setYearlyChartData(dataChart);
+      } catch (err) {
+        handleError(err, showBoundary, messageApi, t);
       }
-      const dataChart = await AnalysisService.getYearlyAnalysisChart(yearlyQuery);
-      setYearlyChartData(dataChart);
-    } catch (err) {
-      handleError(err, showBoundary, messageApi);
     }
   }
 
@@ -240,7 +271,7 @@ export default function DashboardAnalyticsPage() {
         </Flex>
         <Flex vertical gap="small">
           <Title level={4}>{t("daily")}</Title>
-          <Flex>
+          <Flex gap="small">
             <ControlledDatePicker
               value={dayjs(getDailyAnalysisQuery.date)}
               onChange={(v) =>
@@ -249,6 +280,13 @@ export default function DashboardAnalyticsPage() {
               format="DD/MM/YYYY"
               maxDate={dayjs()}
             />
+            <Button
+              type="primary"
+              loading={isDailyAnalysisLoading || reAnalyzing}
+              onClick={reAnalyze}
+            >
+              {t("re-analyze")}
+            </Button>
           </Flex>
           <Table<DailyAnalysisTableItemType>
             pagination={false}
@@ -288,16 +326,16 @@ export default function DashboardAnalyticsPage() {
                   </Flex>
                 ),
               },
-              {
-                dataIndex: "paymentMethod",
-                key: "paymentMethod",
-                title: t("paymentMethod"),
-              },
-              {
-                dataIndex: "location",
-                key: "location",
-                title: t("location"),
-              },
+              // {
+              //   dataIndex: "paymentMethod",
+              //   key: "paymentMethod",
+              //   title: t("paymentMethod"),
+              // },
+              // {
+              //   dataIndex: "location",
+              //   key: "location",
+              //   title: t("location"),
+              // },
               {
                 dataIndex: "notes",
                 key: "notes",
@@ -332,9 +370,9 @@ export default function DashboardAnalyticsPage() {
             <Flex vertical gap="small">
               <Title level={4}>{t("monthly")}</Title>
               <Flex>
-                <ControlledDatePicker 
+                <ControlledDatePicker
                   value={dayjs(monthlyAnalysisQuery.date)}
-                  picker="month" 
+                  picker="month"
                   onChange={(v) => {
                     updateMonthlyAnalysisQuery({ date: v })
                   }}
@@ -384,9 +422,9 @@ export default function DashboardAnalyticsPage() {
             <Flex vertical gap="small">
               <Title level={4}>{t("yearly")}</Title>
               <Flex>
-                <ControlledDatePicker 
+                <ControlledDatePicker
                   value={dayjs(yearlyAnalysisQuery.date)}
-                  picker="year" 
+                  picker="year"
                   onChange={(v) => {
                     updateYearlyAnalysisQuery({ date: v })
                   }}

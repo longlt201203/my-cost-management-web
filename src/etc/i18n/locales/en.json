@@ -71,6 +71,7 @@
   "error": "Error",
   "selectTime": "Select Time",
   "timeRequired": "Please select time",
+  "noData": "No data",
   "themeModal": {
     "themeSettings": "Theme Settings",
     "darkMode": "Dark mode",

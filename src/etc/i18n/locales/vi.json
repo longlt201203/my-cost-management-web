@@ -71,6 +71,7 @@
   "error": "Lỗi",
   "selectTime": "Chọn thời gian",
   "timeRequired": "Vui lòng chọn thời gian",
+  "noData": "Không có dữ liệu",
   "themeModal": {
     "themeSettings": "Tùy chỉnh giao diện",
     "darkMode": "Chế độ tối",

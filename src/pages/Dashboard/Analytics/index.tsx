@@ -1,6 +1,7 @@
 import {
   Button,
   Col,
+  Empty,
   Flex,
   message,
   Row,
@@ -358,6 +359,7 @@ export default function DashboardAnalyticsPage() {
                 </Text>
               </Flex>
             )}
+            locale={{ emptyText: <Empty description={t("noData")}/> }}
           />
         </Flex>
         <Row gutter={[16, 16]}>

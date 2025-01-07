@@ -54,4 +54,8 @@ export const primaryColors = [
         name: 'Green',
         color: '#A9D980',
     },
+    {
+        name: "Purple",
+        color: "#9F8CDC",
+    }
 ]

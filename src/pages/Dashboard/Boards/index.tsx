@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { Languages } from "../../../etc/i18n";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
+import { useQuery } from "@tanstack/react-query";
 
 const { Title, Text } = Typography;
 
@@ -36,26 +37,18 @@ export default function DashboardBoardsPage() {
   const [messageApi, contextHolder] = message.useMessage();
   const { showBoundary } = useErrorBoundary();
 
-  const [boards, setBoards] = useState<BoardResponse[]>([]);
+  const getBoardsInfo = useQuery<BoardResponse[]>({
+    queryKey: ["listBoards"],
+    initialData: [],
+    queryFn: BoardService.listBoards,
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalBoard, setModalBoard] = useState(emptyBoard);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleteModalLoading, setIsDeleteModalLoading] = useState(false);
   const navigate = useNavigate();
-
-  const fetchBoards = async () => {
-    try {
-      const boards = await BoardService.listBoards();
-      setBoards(boards);
-    } catch (err) {
-      handleError(err, showBoundary, messageApi, t);
-    }
-  };
-
-  useEffect(() => {
-    fetchBoards();
-  }, []);
 
   const handleBoardModalSubmit = async (board: BoardResponse) => {
     setIsModalLoading(true);
@@ -75,7 +68,7 @@ export default function DashboardBoardsPage() {
       messageApi.success({
         content: t("success"),
       });
-      fetchBoards();
+      getBoardsInfo.refetch();
     } catch (err) {
       handleError(err, showBoundary, messageApi, t);
     }
@@ -90,7 +83,7 @@ export default function DashboardBoardsPage() {
       messageApi.success({
         content: t("success"),
       });
-      fetchBoards();
+      getBoardsInfo.refetch();
     } catch (err) {
       handleError(err, showBoundary, messageApi, t);
     }
@@ -116,7 +109,7 @@ export default function DashboardBoardsPage() {
           </Button>
         </Flex>
         <Row gutter={[16, 16]}>
-          {boards.map((item, index) => (
+          {getBoardsInfo.data.map((item, index) => (
             <Col
               xs={{ span: 24 }}
               md={{ span: 12 }}
@@ -145,14 +138,16 @@ export default function DashboardBoardsPage() {
                     size="small"
                     variant="outlined"
                     onClick={() => {
-                      const board = boards.find((b) => b.id === item.id);
+                      const board = getBoardsInfo.data.find(
+                        (b) => b.id === item.id
+                      );
                       setModalBoard(board || emptyBoard);
                       setIsModalOpen(true);
                     }}
                     icon={<EditOutlined fontSize="small" />}
-                    style={{ 
+                    style={{
                       background: theme.palette.background.default,
-                      color: theme.palette.text.primary 
+                      color: theme.palette.text.primary,
                     }}
                   ></Button>,
                   <Button
@@ -161,7 +156,9 @@ export default function DashboardBoardsPage() {
                     color="danger"
                     variant="outlined"
                     onClick={() => {
-                      const board = boards.find((b) => b.id === item.id);
+                      const board = getBoardsInfo.data.find(
+                        (b) => b.id === item.id
+                      );
                       setModalBoard(board || emptyBoard);
                       setIsDeleteModalOpen(true);
                     }}
@@ -174,11 +171,17 @@ export default function DashboardBoardsPage() {
                   title={item.title}
                   description={
                     <Flex vertical>
-                      <Text type="secondary" style={{ color: theme.palette.text.primary }}>
+                      <Text
+                        type="secondary"
+                        style={{ color: theme.palette.text.primary }}
+                      >
                         {t("currencyUnit")}:{" "}
                         {getCurrencyUnit(item.currencyUnit)?.label}
                       </Text>
-                      <Text type="secondary" style={{ color: theme.palette.text.primary }}>
+                      <Text
+                        type="secondary"
+                        style={{ color: theme.palette.text.primary }}
+                      >
                         {t("language")}:{" "}
                         {Languages[item.language as keyof typeof Languages]}
                       </Text>

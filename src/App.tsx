@@ -8,7 +8,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "./store";
 
 function MyApp() {
-  const { theme, colorPrimary } = useSelector((state: RootState) => state.theme);
+  const { theme, colorPrimary } = useSelector(
+    (state: RootState) => state.theme
+  );
 
   const AntdThemeConfig = {
     token: {
@@ -39,14 +41,12 @@ function MyApp() {
         clearBg: theme.palette.background.default,
         optionActiveBg: theme.palette.background.default,
         selectorBg: theme.palette.background.default,
-      }
-    }
-  }
+      },
+    },
+  };
 
   return (
-    <ConfigProvider
-      theme={AntdThemeConfig}
-    >
+    <ConfigProvider theme={AntdThemeConfig}>
       <I18nextProvider i18n={i18n}>
         <ErrorBoundary FallbackComponent={ErrorPage}>
           <Outlet />

@@ -89,7 +89,7 @@ export default function AuthPage() {
         <Tabs
           centered
           tabPosition="top"
-          className="w-1/5"
+          className="w-1/5 max-2xl:w-1/4 max-xl:w-1/3 max-lg:w-1/2 max-md:w-80"
           activeKey={currentKey}
           onChange={(k) => setCurrentKey(k)}
           items={tabItems}

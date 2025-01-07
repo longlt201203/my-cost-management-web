@@ -20,6 +20,7 @@ function MyApp() {
       colorTextPlaceholder: theme.palette.text.secondary,
       colorBorder: theme.palette.divider,
       colorTextDisabled: theme.palette.divider,
+      colorTextDescription: theme.palette.text.secondary,
     },
     components: {
       Card: {

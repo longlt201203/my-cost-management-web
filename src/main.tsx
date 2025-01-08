@@ -10,9 +10,11 @@ dayjs.extend(timezone);
 dayjs.extend(utc);
 import { DefaultTheme, ThemeProvider } from "styled-components";
 import { createStyledBreakpointsTheme } from "styled-breakpoints";
-import { Provider as ReduxProvider } from 'react-redux';
+import { Provider as ReduxProvider } from "react-redux";
 import { store } from "./store/index.ts";
 import GlobalStyles from "./theme/globalStyles.ts";
+import { QueryClientProvider } from "@tanstack/react-query";
+import queryClient from "./etc/query-client.ts";
 
 export const breakpoints = {
   xs: "360px",
@@ -29,11 +31,13 @@ const theme: DefaultTheme = createStyledBreakpointsTheme({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <ReduxProvider store={store}>
-        <RouterProvider router={router} />
-      </ReduxProvider>
-      <GlobalStyles />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <ReduxProvider store={store}>
+          <RouterProvider router={router} />
+        </ReduxProvider>
+        <GlobalStyles />
+      </ThemeProvider>
+    </QueryClientProvider>
   </StrictMode>
 );

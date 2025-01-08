@@ -27,7 +27,12 @@ export default function Header() {
       <Flex justify="end" align="center" gap="small" className="h-full">
         <Button
           iconPosition="end"
-          icon={<LogoutIcon fontSize="small" style={{ color: theme.palette.text.primary }} />}
+          icon={
+            <LogoutIcon
+              fontSize="small"
+              style={{ color: theme.palette.text.primary }}
+            />
+          }
           type="text"
           onClick={handleLogout}
         >

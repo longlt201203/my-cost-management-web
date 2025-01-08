@@ -3,13 +3,14 @@ import { useTranslation } from "react-i18next";
 import CategoriesService, {
   CategoryResponse,
 } from "../../../apis/categories.service";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { EditOutlined } from "@mui/icons-material";
 import CategoryModal from "./CategoryModal";
 import { useErrorBoundary } from "react-error-boundary";
 import handleError from "../../../etc/handle-error";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import { useAuth } from "../../../contexts/auth.context";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const { Title } = Typography;
 
@@ -28,33 +29,22 @@ export default function DashboardCategoriesPage() {
   };
   const [messageApi, contextHolder] = message.useMessage();
   const { showBoundary } = useErrorBoundary();
-  const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
-  const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [modalCategory, setModalCategory] = useState(emptyCategory);
-  const [categoryModalLoading, setCategoryModalLoading] = useState(false);
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
   const [deleteCategoryModalOpen, setDeleteCategoryModalOpen] = useState(false);
-  const [deleteCategoryModalLoading, setDeleteCategoryModalLoading] =
-    useState(false);
 
-  const fetchCategories = async () => {
-    setDeleteIds([]);
-    setIsCategoriesLoading(true);
-    try {
-      const categories = await CategoriesService.listCategories({
-        language: i18n.language,
-      });
-      setCategories(categories);
-    } catch (err) {
-      handleError(err, showBoundary, messageApi, t);
-    }
-    setIsCategoriesLoading(false);
-  };
+  const listCategoriesInfo = useQuery<CategoryResponse[]>({
+    queryKey: ["listCategories", i18n.language],
+    initialData: [],
+    queryFn: ({ queryKey }) =>
+      CategoriesService.listCategories({
+        language: queryKey[1] as string,
+      }),
+  });
 
-  const saveCategory = async (category: CategoryResponse) => {
-    setCategoryModalLoading(true);
-    try {
+  const categoryMutation = useMutation({
+    mutationFn: async (category: CategoryResponse) => {
       if (category.id) {
         await CategoriesService.update(category.id, {
           name: category.name,
@@ -67,37 +57,32 @@ export default function DashboardCategoriesPage() {
           color: category.color,
         });
       }
+    },
+    onSuccess: () => {
       messageApi.success({
         content: t("success"),
       });
       setCategoryModalOpen(false);
-      fetchCategories();
-    } catch (err) {
+      listCategoriesInfo.refetch();
+    },
+    onError: (err) => {
       handleError(err, showBoundary, messageApi, t);
-    }
-    setCategoryModalLoading(false);
-  };
+    },
+  });
 
-  const deleteCategories = async () => {
-    setDeleteCategoryModalLoading(true);
-    try {
-      await CategoriesService.delete({
-        ids: deleteIds,
-      });
+  const deleteCategoriesMutation = useMutation({
+    mutationFn: (ids: number[]) => CategoriesService.delete({ ids }),
+    onSuccess: () => {
       setDeleteCategoryModalOpen(false);
-      fetchCategories();
+      listCategoriesInfo.refetch();
       messageApi.success({
         content: t("success"),
       });
-    } catch (err) {
+    },
+    onError: (err) => {
       handleError(err, showBoundary, messageApi, t);
-    }
-    setDeleteCategoryModalLoading(false);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, [i18n.language]);
+    },
+  });
 
   return (
     <>
@@ -128,7 +113,7 @@ export default function DashboardCategoriesPage() {
           </Button>
         </Flex>
         <Table<CategoryTableItemType>
-          loading={isCategoriesLoading}
+          loading={listCategoriesInfo.isLoading}
           rowSelection={{
             type: "checkbox",
             onChange: (ids) => {
@@ -139,7 +124,7 @@ export default function DashboardCategoriesPage() {
             }),
             selectedRowKeys: deleteIds.map(String),
           }}
-          dataSource={categories.map((item, index) => ({
+          dataSource={listCategoriesInfo.data.map((item, index) => ({
             ...item,
             index: index + 1,
             key: String(item.id),
@@ -181,19 +166,19 @@ export default function DashboardCategoriesPage() {
       <CategoryModal
         category={modalCategory}
         open={categoryModalOpen}
-        onSubmit={saveCategory}
+        onSubmit={categoryMutation.mutate}
         onCancel={() => {
           setCategoryModalOpen(false);
         }}
-        loading={categoryModalLoading}
+        loading={categoryMutation.isPending}
       />
       <DeleteCategoryModal
         open={deleteCategoryModalOpen}
-        loading={deleteCategoryModalLoading}
+        loading={deleteCategoriesMutation.isPending}
         onCancel={() => {
           setDeleteCategoryModalOpen(false);
         }}
-        onOk={deleteCategories}
+        onOk={() => deleteCategoriesMutation.mutate(deleteIds)}
       />
     </>
   );

@@ -1,5 +1,5 @@
 import { Button, Card, Col, Flex, message, Row, Typography } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BoardService, { BoardResponse } from "../../../apis/board.service";
 import { useNavigate } from "react-router-dom";
 import BoardModal from "./BoardModal";
@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 import { Languages } from "../../../etc/i18n";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const { Title, Text } = Typography;
 
@@ -36,6 +36,10 @@ export default function DashboardBoardsPage() {
 
   const [messageApi, contextHolder] = message.useMessage();
   const { showBoundary } = useErrorBoundary();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalBoard, setModalBoard] = useState(emptyBoard);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const getBoardsInfo = useQuery<BoardResponse[]>({
     queryKey: ["listBoards"],
@@ -43,16 +47,8 @@ export default function DashboardBoardsPage() {
     queryFn: BoardService.listBoards,
   });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
-  const [modalBoard, setModalBoard] = useState(emptyBoard);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isDeleteModalLoading, setIsDeleteModalLoading] = useState(false);
-  const navigate = useNavigate();
-
-  const handleBoardModalSubmit = async (board: BoardResponse) => {
-    setIsModalLoading(true);
-    try {
+  const boardMutation = useMutation({
+    mutationFn: async (board: BoardResponse) => {
       if (board.id) {
         await BoardService.update(board.id, {
           title: board.title,
@@ -64,31 +60,32 @@ export default function DashboardBoardsPage() {
           language: board.language,
         });
       }
+    },
+    onSuccess: () => {
       setIsModalOpen(false);
       messageApi.success({
         content: t("success"),
       });
       getBoardsInfo.refetch();
-    } catch (err) {
+    },
+    onError: (err) => {
       handleError(err, showBoundary, messageApi, t);
-    }
-    setIsModalLoading(false);
-  };
+    },
+  });
 
-  const handleConfirmDelete = async (boardId: number) => {
-    setIsDeleteModalLoading(true);
-    try {
-      await BoardService.delete(boardId);
+  const deleteBoardMutation = useMutation({
+    mutationFn: BoardService.delete,
+    onSuccess: () => {
       setIsDeleteModalOpen(false);
       messageApi.success({
         content: t("success"),
       });
       getBoardsInfo.refetch();
-    } catch (err) {
+    },
+    onError: (err) => {
       handleError(err, showBoundary, messageApi, t);
-    }
-    setIsDeleteModalLoading(false);
-  };
+    },
+  });
 
   return (
     <>
@@ -194,22 +191,22 @@ export default function DashboardBoardsPage() {
         </Row>
       </Flex>
       <BoardModal
-        isLoading={isModalLoading}
+        isLoading={boardMutation.isPending}
         isOpen={isModalOpen}
         board={modalBoard}
-        onSubmit={handleBoardModalSubmit}
+        onSubmit={boardMutation.mutate}
         onCancel={() => {
           setIsModalOpen(false);
         }}
       />
       <DeleteBoardModal
         board={modalBoard}
-        isLoading={isDeleteModalLoading}
+        isLoading={deleteBoardMutation.isPending}
         isOpen={isDeleteModalOpen}
         onCancel={() => {
           setIsDeleteModalOpen(false);
         }}
-        onConfirmDelete={handleConfirmDelete}
+        onConfirmDelete={deleteBoardMutation.mutate}
       />
     </>
   );

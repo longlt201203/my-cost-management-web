@@ -117,7 +117,7 @@ export default function DashboardLayout() {
       >
         <Menu
           items={menuItems}
-          selectedKeys={[keys[keys.length - 1]]}
+          selectedKeys={keys.slice(1)}
           onSelect={(e) => {
             navigate(e.key);
             setOpen(false);

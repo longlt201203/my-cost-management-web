@@ -1,5 +1,5 @@
 import { Button, Card, Col, Flex, message, Row, Typography } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BoardService, { BoardResponse } from "../../../apis/board.service";
 import { useNavigate } from "react-router-dom";
 import BoardModal from "./BoardModal";
@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { Languages } from "../../../etc/i18n";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import SkeletonLoading from "../../../components/SkeletonLoading";
 import { PageType } from "../../../utils/enum";
 
@@ -37,31 +38,19 @@ export default function DashboardBoardsPage() {
 
   const [messageApi, contextHolder] = message.useMessage();
   const { showBoundary } = useErrorBoundary();
-
-  const [boards, setBoards] = useState<BoardResponse[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalBoard, setModalBoard] = useState(emptyBoard);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isDeleteModalLoading, setIsDeleteModalLoading] = useState(false);
   const navigate = useNavigate();
 
-  const fetchBoards = async () => {
-    try {
-      const boards = await BoardService.listBoards();
-      setBoards(boards);
-    } catch (err) {
-      handleError(err, showBoundary, messageApi, t);
-    }
-  };
+  const getBoardsInfo = useQuery<BoardResponse[]>({
+    queryKey: ["listBoards"],
+    initialData: [],
+    queryFn: BoardService.listBoards,
+  });
 
-  useEffect(() => {
-    fetchBoards();
-  }, []);
-
-  const handleBoardModalSubmit = async (board: BoardResponse) => {
-    setIsModalLoading(true);
-    try {
+  const boardMutation = useMutation({
+    mutationFn: async (board: BoardResponse) => {
       if (board.id) {
         await BoardService.update(board.id, {
           title: board.title,
@@ -73,31 +62,32 @@ export default function DashboardBoardsPage() {
           language: board.language,
         });
       }
+    },
+    onSuccess: () => {
       setIsModalOpen(false);
       messageApi.success({
         content: t("success"),
       });
-      fetchBoards();
-    } catch (err) {
+      getBoardsInfo.refetch();
+    },
+    onError: (err) => {
       handleError(err, showBoundary, messageApi, t);
-    }
-    setIsModalLoading(false);
-  };
+    },
+  });
 
-  const handleConfirmDelete = async (boardId: number) => {
-    setIsDeleteModalLoading(true);
-    try {
-      await BoardService.delete(boardId);
+  const deleteBoardMutation = useMutation({
+    mutationFn: BoardService.delete,
+    onSuccess: () => {
       setIsDeleteModalOpen(false);
       messageApi.success({
         content: t("success"),
       });
-      fetchBoards();
-    } catch (err) {
+      getBoardsInfo.refetch();
+    },
+    onError: (err) => {
       handleError(err, showBoundary, messageApi, t);
-    }
-    setIsDeleteModalLoading(false);
-  };
+    },
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -128,7 +118,7 @@ export default function DashboardBoardsPage() {
           </Button>
         </Flex>
         <Row gutter={[16, 16]}>
-          {boards.map((item, index) => (
+          {getBoardsInfo.data.map((item, index) => (
             <Col
               xs={{ span: 24 }}
               md={{ span: 12 }}
@@ -157,14 +147,16 @@ export default function DashboardBoardsPage() {
                     size="small"
                     variant="outlined"
                     onClick={() => {
-                      const board = boards.find((b) => b.id === item.id);
+                      const board = getBoardsInfo.data.find(
+                        (b) => b.id === item.id
+                      );
                       setModalBoard(board || emptyBoard);
                       setIsModalOpen(true);
                     }}
                     icon={<EditOutlined fontSize="small" />}
-                    style={{ 
+                    style={{
                       background: theme.palette.background.default,
-                      color: theme.palette.text.primary 
+                      color: theme.palette.text.primary,
                     }}
                   ></Button>,
                   <Button
@@ -173,7 +165,9 @@ export default function DashboardBoardsPage() {
                     color="danger"
                     variant="outlined"
                     onClick={() => {
-                      const board = boards.find((b) => b.id === item.id);
+                      const board = getBoardsInfo.data.find(
+                        (b) => b.id === item.id
+                      );
                       setModalBoard(board || emptyBoard);
                       setIsDeleteModalOpen(true);
                     }}
@@ -186,11 +180,17 @@ export default function DashboardBoardsPage() {
                   title={item.title}
                   description={
                     <Flex vertical>
-                      <Text type="secondary" style={{ color: theme.palette.text.primary }}>
+                      <Text
+                        type="secondary"
+                        style={{ color: theme.palette.text.primary }}
+                      >
                         {t("currencyUnit")}:{" "}
                         {getCurrencyUnit(item.currencyUnit)?.label}
                       </Text>
-                      <Text type="secondary" style={{ color: theme.palette.text.primary }}>
+                      <Text
+                        type="secondary"
+                        style={{ color: theme.palette.text.primary }}
+                      >
                         {t("language")}:{" "}
                         {Languages[item.language as keyof typeof Languages]}
                       </Text>
@@ -203,22 +203,22 @@ export default function DashboardBoardsPage() {
         </Row>
       </Flex>
       <BoardModal
-        isLoading={isModalLoading}
+        isLoading={boardMutation.isPending}
         isOpen={isModalOpen}
         board={modalBoard}
-        onSubmit={handleBoardModalSubmit}
+        onSubmit={boardMutation.mutate}
         onCancel={() => {
           setIsModalOpen(false);
         }}
       />
       <DeleteBoardModal
         board={modalBoard}
-        isLoading={isDeleteModalLoading}
+        isLoading={deleteBoardMutation.isPending}
         isOpen={isDeleteModalOpen}
         onCancel={() => {
           setIsDeleteModalOpen(false);
         }}
-        onConfirmDelete={handleConfirmDelete}
+        onConfirmDelete={deleteBoardMutation.mutate}
       />
     </>
   );

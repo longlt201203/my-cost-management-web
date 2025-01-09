@@ -7,6 +7,7 @@ import NotFoundPage from "../pages/ErrorPage/NotFoundPage";
 import AuthProvider from "../providers/AuthProvider";
 import BoardDetailPage from "../pages/Dashboard/Boards/BoardDetailPage";
 import DashboardAnalyticsPage from "../pages/Dashboard/Analytics";
+import DashboardAnalyticsPage_v2 from "../pages/Dashboard/Analytics_v2";
 import DashboardCategoriesPage from "../pages/Dashboard/Categories";
 import AuthPage from "../pages/AuthPage";
 
@@ -38,6 +39,14 @@ const router = createBrowserRouter([
               {
                 path: "boards/:boardId",
                 element: <BoardDetailPage />,
+              },
+              {
+                path: "analytics/v2/:boardId",
+                element: <DashboardAnalyticsPage_v2 />,
+              },
+              {
+                path: "analytics/v2",
+                element: <DashboardAnalyticsPage_v2 />,
               },
               {
                 path: "analytics/:boardId",

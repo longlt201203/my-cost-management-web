@@ -17,6 +17,8 @@ import { useTranslation } from "react-i18next";
 import { Languages } from "../../../etc/i18n";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
+import SkeletonLoading from "../../../components/SkeletonLoading";
+import { PageType } from "../../../utils/enum";
 
 const { Title, Text } = Typography;
 
@@ -96,6 +98,16 @@ export default function DashboardBoardsPage() {
     }
     setIsDeleteModalLoading(false);
   };
+
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 3000);
+  }, []);
+
+  if (isLoading) return <SkeletonLoading type={PageType.board}/>
 
   return (
     <>

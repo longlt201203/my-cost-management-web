@@ -10,6 +10,8 @@ import { useErrorBoundary } from "react-error-boundary";
 import handleError from "../../../etc/handle-error";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import { useAuth } from "../../../contexts/auth.context";
+import { PageType } from "../../../utils/enum";
+import SkeletonLoading from "../../../components/SkeletonLoading";
 
 const { Title } = Typography;
 
@@ -98,6 +100,16 @@ export default function DashboardCategoriesPage() {
   useEffect(() => {
     fetchCategories();
   }, [i18n.language]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 3000);
+  }, []);
+
+  if (isLoading) return <SkeletonLoading type={PageType.category}/>
 
   return (
     <>

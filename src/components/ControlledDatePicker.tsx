@@ -8,6 +8,7 @@ export interface ControlledDatePickerProps {
   picker?: DatePickerProps["picker"];
   format?: string;
   maxDate?: dayjs.Dayjs;
+  disabled?: boolean;
 }
 
 export default function ControlledDatePicker({
@@ -16,6 +17,7 @@ export default function ControlledDatePicker({
   picker,
   format,
   maxDate,
+  disabled,
 }: ControlledDatePickerProps) {
   const currentDate = value || dayjs();
   const unit = picker == "month" ? "month" : picker == "year" ? "year" : "day";
@@ -32,6 +34,7 @@ export default function ControlledDatePicker({
             onChange(d.subtract(1, unit));
           }
         }}
+        disabled={disabled}
       ></Button>
       <DatePicker
         onChange={(v) => onChange && onChange(v ? v : dayjs())}
@@ -39,6 +42,7 @@ export default function ControlledDatePicker({
         picker={picker}
         format={format}
         maxDate={maxDate}
+        disabled={disabled}
       />
       <Button
         size="small"
@@ -51,9 +55,10 @@ export default function ControlledDatePicker({
           }
         }}
         disabled={
-          maxDate &&
-          (dayjs(currentDate).isSame(maxDate, "date") ||
-            dayjs(currentDate).isAfter(maxDate, "date"))
+          (maxDate &&
+            (dayjs(currentDate).isSame(maxDate, "date") ||
+              dayjs(currentDate).isAfter(maxDate, "date"))) ||
+          disabled
         }
       ></Button>
     </Flex>

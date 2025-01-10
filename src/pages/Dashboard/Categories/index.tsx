@@ -11,6 +11,8 @@ import handleError from "../../../etc/handle-error";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import { useAuth } from "../../../contexts/auth.context";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { PageType } from "../../../utils/enum";
+import SkeletonLoading from "../../../components/SkeletonLoading";
 
 const { Title } = Typography;
 
@@ -84,6 +86,8 @@ export default function DashboardCategoriesPage() {
     },
   });
 
+  if (listCategoriesInfo.isFetching) return <SkeletonLoading type={PageType.category}/>
+
   return (
     <>
       {contextHolder}
@@ -113,7 +117,7 @@ export default function DashboardCategoriesPage() {
           </Button>
         </Flex>
         <Table<CategoryTableItemType>
-          loading={listCategoriesInfo.isLoading}
+          loading={listCategoriesInfo.isPending}
           rowSelection={{
             type: "checkbox",
             onChange: (ids) => {

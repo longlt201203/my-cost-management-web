@@ -24,7 +24,13 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Chart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
-import AnalysisService, { AnalysisDTO, MonthlyAnalysisChartResponse, MonthlyAnalysisResponse, YearlyAnalysisChartResponse, YearlyAnalysisResponse } from "../../../apis/analysis.service";
+import AnalysisService, {
+  AnalysisDTO,
+  MonthlyAnalysisChartResponse,
+  MonthlyAnalysisResponse,
+  YearlyAnalysisChartResponse,
+  YearlyAnalysisResponse,
+} from "../../../apis/analysis.service";
 import { CategoryResponse } from "../../../apis/categories.service";
 import { useDebounce } from "../../../etc/debouce";
 
@@ -51,22 +57,26 @@ export default function DashboardAnalyticsPage() {
     });
   const [isDailyAnalysisLoading, setIsDailyAnalysisLoading] = useState(false);
   const [reAnalyzing, setReAnalyzing] = useState(false);
-  const [monthlyAnalysisQuery, setMonthlyAnalysisQuery] =
-    useState<AnalysisDTO>({
+  const [monthlyAnalysisQuery, setMonthlyAnalysisQuery] = useState<AnalysisDTO>(
+    {
       boardId: Number(boardId),
       date: dayjs(),
-      timezone: 'Asia/Ho_Chi_Minh',
-    });
-  const [monthlyAnalysis, setMonthlyAnalysis] = useState<MonthlyAnalysisResponse>();
-  const [monthlyChartData, setMonthlyChartData] = useState<MonthlyAnalysisChartResponse>();
-  const [yearlyAnalysisQuery, setYearlyAnalysisQuery] =
-    useState<AnalysisDTO>({
-      boardId: Number(boardId),
-      date: dayjs(),
-      timezone: 'Asia/Ho_Chi_Minh',
-    })
-  const [yearlyAnalysis, setYearlyAnalysis] = useState<YearlyAnalysisResponse>();
-  const [yearlyChartData, setYearlyChartData] = useState<YearlyAnalysisChartResponse>();
+      timezone: "Asia/Ho_Chi_Minh",
+    }
+  );
+  const [monthlyAnalysis, setMonthlyAnalysis] =
+    useState<MonthlyAnalysisResponse>();
+  const [monthlyChartData, setMonthlyChartData] =
+    useState<MonthlyAnalysisChartResponse>();
+  const [yearlyAnalysisQuery, setYearlyAnalysisQuery] = useState<AnalysisDTO>({
+    boardId: Number(boardId),
+    date: dayjs(),
+    timezone: "Asia/Ho_Chi_Minh",
+  });
+  const [yearlyAnalysis, setYearlyAnalysis] =
+    useState<YearlyAnalysisResponse>();
+  const [yearlyChartData, setYearlyChartData] =
+    useState<YearlyAnalysisChartResponse>();
 
   const fetchBoards = async () => {
     try {
@@ -155,7 +165,7 @@ export default function DashboardAnalyticsPage() {
         const monthlyQuery = {
           ...monthlyAnalysisQuery,
           boardId: Number(boardId),
-        }
+        };
         const data = await AnalysisService.getMonthlyAnalysis(monthlyQuery);
         setMonthlyAnalysis(data);
       } catch (err) {
@@ -170,14 +180,16 @@ export default function DashboardAnalyticsPage() {
         const monthlyQuery = {
           ...monthlyAnalysisQuery,
           boardId: Number(boardId),
-        }
-        const dataChart = await AnalysisService.getMonthAnalysisChart(monthlyQuery);
+        };
+        const dataChart = await AnalysisService.getMonthAnalysisChart(
+          monthlyQuery
+        );
         setMonthlyChartData(dataChart);
       } catch (err) {
         handleError(err, showBoundary, messageApi, t);
       }
     }
-  }
+  };
 
   useEffect(() => {
     fetchMonthlyAnalysis();
@@ -206,7 +218,7 @@ export default function DashboardAnalyticsPage() {
         const yearlyQuery = {
           ...yearlyAnalysisQuery,
           boardId: Number(boardId),
-        }
+        };
         const data = await AnalysisService.getYearlyAnalysis(yearlyQuery);
         setYearlyAnalysis(data);
       } catch (err) {
@@ -221,14 +233,16 @@ export default function DashboardAnalyticsPage() {
         const yearlyQuery = {
           ...yearlyAnalysisQuery,
           boardId: Number(boardId),
-        }
-        const dataChart = await AnalysisService.getYearlyAnalysisChart(yearlyQuery);
+        };
+        const dataChart = await AnalysisService.getYearlyAnalysisChart(
+          yearlyQuery
+        );
         setYearlyChartData(dataChart);
       } catch (err) {
         handleError(err, showBoundary, messageApi, t);
       }
     }
-  }
+  };
 
   useEffect(() => {
     fetchYearlyAnalysis();
@@ -248,15 +262,24 @@ export default function DashboardAnalyticsPage() {
       ...data,
     };
     setYearlyAnalysisQuery(newQuery);
-  }
+  };
 
   return (
     <>
       {contextHolder}
       <Flex className="p-4" gap="middle" vertical>
-        <Title level={2} className="mb-0">
-          {t("analytics")}
-        </Title>
+        <Flex gap="small">
+          <Title level={2} className="mb-0">
+            {t("analytics")}
+          </Title>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => navigate("/analytics/v2")}
+          >
+            v2
+          </Button>
+        </Flex>
         <Flex>
           <Select
             options={boards.map((board) => ({
@@ -359,7 +382,7 @@ export default function DashboardAnalyticsPage() {
                 </Text>
               </Flex>
             )}
-            locale={{ emptyText: <Empty description={t("noData")}/> }}
+            locale={{ emptyText: <Empty description={t("noData")} /> }}
           />
         </Flex>
         <Row gutter={[16, 16]}>
@@ -376,7 +399,7 @@ export default function DashboardAnalyticsPage() {
                   value={dayjs(monthlyAnalysisQuery.date)}
                   picker="month"
                   onChange={(v) => {
-                    updateMonthlyAnalysisQuery({ date: v })
+                    updateMonthlyAnalysisQuery({ date: v });
                   }}
                   format="YYYY-MM"
                 />
@@ -405,7 +428,9 @@ export default function DashboardAnalyticsPage() {
                     // data: Array.from({ length: 30 }, () =>
                     //   Math.floor(1 + Math.random() * 100)
                     // ),
-                    data: monthlyChartData?.charts ? monthlyChartData.charts : []
+                    data: monthlyChartData?.charts
+                      ? monthlyChartData.charts
+                      : [],
                   },
                 ]}
               />
@@ -428,7 +453,7 @@ export default function DashboardAnalyticsPage() {
                   value={dayjs(yearlyAnalysisQuery.date)}
                   picker="year"
                   onChange={(v) => {
-                    updateYearlyAnalysisQuery({ date: v })
+                    updateYearlyAnalysisQuery({ date: v });
                   }}
                   format="YYYY"
                 />

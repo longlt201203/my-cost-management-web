@@ -22,33 +22,35 @@ import Register from "./Register";
 import { useSearchParams } from "react-router-dom";
 import { TFunction } from "i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
 import { Palette } from "@mui/icons-material";
 import { setPrimaryColor, toggleTheme } from "../../store/themeSlice";
 import { primaryColors } from "../../theme";
+import { RootState } from "../../store";
 
 const { Title } = Typography;
 
 const getTabItems = (
   t: TFunction<"translation", undefined>
 ): TabsProps["items"] => [
-    {
-      key: "login",
-      label: t("login"),
-      children: <Login />,
-    },
-    {
-      key: "register",
-      label: t("register"),
-      children: <Register />,
-    },
-  ];
+  {
+    key: "login",
+    label: t("login"),
+    children: <Login />,
+  },
+  {
+    key: "register",
+    label: t("register"),
+    children: <Register />,
+  },
+];
 
 export default function AuthPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [messageApi, contextHolder] = message.useMessage();
   const { t, i18n } = useTranslation();
-  const { theme, isDarkMode, colorPrimary } = useSelector((state: RootState) => state.theme);
+  const { theme, isDarkMode, colorPrimary } = useSelector(
+    (state: RootState) => state.theme
+  );
   const dispatch = useDispatch();
   const tabItems = getTabItems(t)!;
   const handleChangeLanguage: MenuProps["onClick"] = (e) => {
@@ -58,7 +60,9 @@ export default function AuthPage() {
   const [currentKey, setCurrentKey] = useState(
     searchParams.get("tab") || tabItems[0].key
   );
-  const getColorComponent = primaryColors.find((component) => component.color === colorPrimary);
+  const getColorComponent = primaryColors.find(
+    (component) => component.color === colorPrimary
+  );
 
   useEffect(() => {
     if (searchParams.get("status") == "success") {
@@ -96,10 +100,7 @@ export default function AuthPage() {
           style={{ background: theme.palette.background.default }}
         />
       </Flex>
-      <FloatButton.Group
-        trigger="hover"
-        icon={<SettingOutlined />}
-      >
+      <FloatButton.Group trigger="hover" icon={<SettingOutlined />}>
         {/* LANGUAGE SETTINGS */}
         <Dropdown
           menu={{
@@ -115,30 +116,41 @@ export default function AuthPage() {
         </Dropdown>
 
         {/* THEME SETTINGS */}
-        <Popover placement="left" title={t("themeModal.themeSettings")} content={<>
-          <Flex vertical gap={12}>
-            <Row justify={"space-between"}>
-              <Col>{t("themeModal.darkMode")}:</Col>
-              <Col><Switch onChange={() => dispatch(toggleTheme())} value={isDarkMode} /></Col>
-            </Row>
+        <Popover
+          placement="left"
+          title={t("themeModal.themeSettings")}
+          content={
+            <>
+              <Flex vertical gap={12}>
+                <Row justify={"space-between"}>
+                  <Col>{t("themeModal.darkMode")}:</Col>
+                  <Col>
+                    <Switch
+                      onChange={() => dispatch(toggleTheme())}
+                      value={isDarkMode}
+                    />
+                  </Col>
+                </Row>
 
-            <Row justify={"space-between"}>
-              <Col>{t("themeModal.colorTheme")}: </Col>
-              <Col>
-                <Select
-                  value={getColorComponent?.name}
-                  style={{ width: 80 }}
-                  options={primaryColors.map((color) => ({
-                    value: color.color,
-                    label: color.name,
-                  }))}
-                  onChange={(e) => dispatch(setPrimaryColor(e))}
-                />
-              </Col>
-            </Row>
-          </Flex>
-        </>}>
-          <FloatButton icon={<Palette sx={{ fontSize: 20, }} />} />
+                <Row justify={"space-between"}>
+                  <Col>{t("themeModal.colorTheme")}: </Col>
+                  <Col>
+                    <Select
+                      value={getColorComponent?.name}
+                      style={{ width: 80 }}
+                      options={primaryColors.map((color) => ({
+                        value: color.color,
+                        label: color.name,
+                      }))}
+                      onChange={(e) => dispatch(setPrimaryColor(e))}
+                    />
+                  </Col>
+                </Row>
+              </Flex>
+            </>
+          }
+        >
+          <FloatButton icon={<Palette sx={{ fontSize: 20 }} />} />
         </Popover>
       </FloatButton.Group>
     </>

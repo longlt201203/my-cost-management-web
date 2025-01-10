@@ -10,12 +10,13 @@ const SkeletonBoard = () => {
             />
             <Skeleton.Button active style={{ width: 100 }} />
             <Row gutter={[16, 16]}>
-                {Array(4).fill(null).map(() => (
+                {Array(4).fill(null).map((_, index) => (
                     <Col
                         xs={{ span: 24 }}
                         md={{ span: 12 }}
                         lg={{ span: 8 }}
                         xl={{ span: 6 }}
+                        key={index}
                     >
                         <Card
                             loading={true}

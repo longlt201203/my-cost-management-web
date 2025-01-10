@@ -117,7 +117,7 @@ export default function DashboardCategoriesPage() {
           </Button>
         </Flex>
         <Table<CategoryTableItemType>
-          loading={listCategoriesInfo.isLoading}
+          loading={listCategoriesInfo.isPending}
           rowSelection={{
             type: "checkbox",
             onChange: (ids) => {

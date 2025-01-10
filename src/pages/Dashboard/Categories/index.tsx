@@ -11,6 +11,8 @@ import handleError from "../../../etc/handle-error";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import { useAuth } from "../../../contexts/auth.context";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { PageType } from "../../../utils/enum";
+import SkeletonLoading from "../../../components/SkeletonLoading";
 
 const { Title } = Typography;
 
@@ -83,6 +85,8 @@ export default function DashboardCategoriesPage() {
       handleError(err, showBoundary, messageApi, t);
     },
   });
+
+  if (listCategoriesInfo.isFetching) return <SkeletonLoading type={PageType.category}/>
 
   return (
     <>

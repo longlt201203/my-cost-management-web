@@ -18,6 +18,8 @@ import { Languages } from "../../../etc/i18n";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import SkeletonLoading from "../../../components/SkeletonLoading";
+import { PageType } from "../../../utils/enum";
 
 const { Title, Text } = Typography;
 
@@ -45,7 +47,7 @@ export default function DashboardBoardsPage() {
     queryKey: ["listBoards"],
     initialData: [],
     queryFn: BoardService.listBoards,
-  });
+  }); 
 
   const boardMutation = useMutation({
     mutationFn: async (board: BoardResponse) => {
@@ -86,6 +88,8 @@ export default function DashboardBoardsPage() {
       handleError(err, showBoundary, messageApi, t);
     },
   });
+
+  if (getBoardsInfo.isFetching) return <SkeletonLoading type={PageType.board}/>
 
   return (
     <>
